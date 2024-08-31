@@ -204,30 +204,30 @@
         <label id="mode-label">Pencil</label>
         <input
           type="color"
-          id="colorPicker"
-          class="colorPicker"
+          id="fg-color-picker"
+          class="fg-color-picker"
           value="#000000"
         />
         <input
           type="range"
-          id="thicknessSlider"
-          class="thicknessSlider"
+          id="thickness-slider"
+          class="thickness-slider"
           min="1"
           max="100"
           value="1"
         />
         <input
           type="range"
-          id="eraserSizeSlider"
-          class="eraserSizeSlider"
+          id="eraser-size-slider"
+          class="eraser-size-slider"
           min="1"
           max="50"
           value="20"
         />
         <input
           type="color"
-          id="bgColorPicker"
-          class="bgColorPicker"
+          id="bg-color-picker"
+          class="bg-color-picker"
           value="#FFFFEF"
         />
       </div>
@@ -263,10 +263,10 @@
 
       function showTools(mode) {
         const tools = {
-          pencil: ["colorPicker", "thicknessSlider"],
-          bucket: ["colorPicker"],
-          eraser: ["eraserSizeSlider"],
-          background: ["bgColorPicker"],
+          pencil: ["fg-color-picker", "thickness-slider"],
+          bucket: ["fg-color-picker"],
+          eraser: ["eraser-size-slider"],
+          background: ["bg-color-picker"],
         };
         Object.values(tools).forEach((ids) =>
           ids.forEach(
@@ -308,19 +308,19 @@
           initialMode.charAt(0).toUpperCase() + initialMode.slice(1);
 
         document
-          .getElementById("colorPicker")
+          .getElementById("fg-color-picker")
           .addEventListener("input", (event) => {
             currentColor = event.target.value;
           });
 
         document
-          .getElementById("thicknessSlider")
+          .getElementById("thickness-slider")
           .addEventListener("input", (event) => {
             currentThickness = event.target.value;
           });
 
         document
-          .getElementById("eraserSizeSlider")
+          .getElementById("eraser-size-slider")
           .addEventListener("input", (event) => {
             eraserSize = event.target.value;
             eraserIndicator.style.width = eraserSize + "px";
@@ -328,7 +328,7 @@
           });
 
         document
-          .getElementById("bgColorPicker")
+          .getElementById("bg-color-picker")
           .addEventListener("input", (event) => {
             saveState();
             bgCtx.fillStyle = event.target.value;
@@ -347,7 +347,7 @@
           if (currentMode === "bucket") {
             const { x, y } = getPosition(event);
             const fillColor = hexToRgbA(
-              document.getElementById("colorPicker").value
+              document.getElementById("fg-color-picker").value
             );
             saveState();
             bucketFill(x, y, fillColor);
@@ -358,7 +358,7 @@
       function clearCanvas() {
         fgCtx.clearRect(0, 0, fgCanvas.width, fgCanvas.height);
         bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-        bgCtx.fillStyle = document.getElementById("bgColorPicker").value;
+        bgCtx.fillStyle = document.getElementById("bg-color-picker").value;
         bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
         undoStack.length = 0;
       }
