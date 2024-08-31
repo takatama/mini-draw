@@ -1,6 +1,6 @@
-# simple-draw
+# mini-draw
 
-simple-draw は軽量でシンプルなお絵描きツールです。基本的な機能に焦点を当て、デジタルスケッチやアイデア出しが簡単にできるよう設計されています。
+mini-draw は軽量でシンプルなお絵描きツールです。基本的な機能に焦点を当て、デジタルスケッチやアイデア出しが簡単にできるよう設計されています。
 
 ## 特徴
 
@@ -18,20 +18,20 @@ simple-draw は軽量でシンプルなお絵描きツールです。基本的�
 
 ## デモ
 
-[simple-draw デモを見る](https://codepen.io/takatama/full/ZEdMxNm)
+[mini-draw デモを見る](https://codepen.io/takatama/full/ZEdMxNm)
 
 ## インストールと使用方法
 
 1. リポジトリをクローンします。
 
    ```bash
-   git clone https://github.com/takatama/simple-draw.git
+   git clone https://github.com/takatama/mini-draw.git
    ```
 
 2. プロジェクトディレクトリに移動します。
 
    ```bash
-   cd simple-draw
+   cd mini-draw
    ```
 
 3. `index.html` をブラウザで開いて、ツールを使い始めます。
@@ -43,7 +43,7 @@ simple-draw は軽量でシンプルなお絵描きツールです。基本的�
 
 ## 貢献
 
-バグ報告や機能追加の提案は、[Issues](https://github.com/takatama/simple-draw/issues) で受け付けています。プルリクエストも大歓迎です！
+バグ報告や機能追加の提案は、[Issues](https://github.com/takatama/mini-draw/issues) で受け付けています。プルリクエストも大歓迎です！
 
 ## ライセンス
 

@@ -1,6 +1,6 @@
-# simple-draw
+# mini-draw
 
-simple-draw is a lightweight and minimalistic drawing tool built with vanilla JavaScript. It focuses on providing essential features for quick and easy digital sketching and brainstorming.
+mini-draw is a lightweight and minimalistic drawing tool built with vanilla JavaScript. It focuses on providing essential features for quick and easy digital sketching and brainstorming.
 
 ## Features
 
@@ -18,20 +18,20 @@ simple-draw is a lightweight and minimalistic drawing tool built with vanilla Ja
 
 ## Demo
 
-[View the simple-draw demo](https://codepen.io/takatama/full/ZEdMxNm)
+[View the mini-draw demo](https://codepen.io/takatama/full/ZEdMxNm)
 
 ## Installation and Usage
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/takatama/simple-draw.git
+   git clone https://github.com/takatama/mini-draw.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd simple-draw
+   cd mini-draw
    ```
 
 3. Open `index.html` in your browser to start using the tool.
@@ -43,7 +43,7 @@ simple-draw is a lightweight and minimalistic drawing tool built with vanilla Ja
 
 ## Contributing
 
-Bug reports and feature requests are welcome via [Issues](https://github.com/takatama/simple-draw/issues). Pull requests are also highly appreciated!
+Bug reports and feature requests are welcome via [Issues](https://github.com/takatama/mini-draw/issues). Pull requests are also highly appreciated!
 
 ## License
 
