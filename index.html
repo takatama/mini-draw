@@ -31,10 +31,6 @@
         width: 100%;
       }
 
-      .topic {
-        margin: 0;
-      }
-
       .canvas-container {
         position: relative;
         width: 340px;
@@ -125,7 +121,7 @@
           type="radio"
           id="pencilMode"
           name="mode"
-          value="Pencil"
+          value="pencil"
           checked
         />
         <label for="pencilMode">
@@ -144,7 +140,7 @@
           </svg>
         </label>
 
-        <input type="radio" id="bucketMode" name="mode" value="Bucket" />
+        <input type="radio" id="bucketMode" name="mode" value="bucket" />
         <label for="bucketMode">
           <!-- Bucket https://icons.getbootstrap.jp/ -->
           <svg
@@ -162,7 +158,7 @@
           </svg>
         </label>
 
-        <input type="radio" id="eraserMode" name="mode" value="Eraser" />
+        <input type="radio" id="eraserMode" name="mode" value="eraser" />
         <label for="eraserMode">
           <!-- Eraser https://icons.getbootstrap.jp/ -->
           <svg
@@ -179,7 +175,7 @@
           </svg>
         </label>
 
-        <input type="radio" id="bgColorMode" name="mode" value="Background" />
+        <input type="radio" id="bgColorMode" name="mode" value="background" />
         <label for="bgColorMode">
           <svg
             id="bgIcon"
@@ -206,10 +202,34 @@
     <div class="toolbar container-width">
       <div class="tool-group">
         <label id="mode-label">Pencil</label>
-        <input type="color" id="colorPicker" value="#000000" />
-        <input type="range" id="thicknessSlider" min="1" max="100" value="1" />
-        <input type="range" id="eraserSizeSlider" min="1" max="50" value="20" />
-        <input type="color" id="bgColorPicker" value="#FFFFEF" />
+        <input
+          type="color"
+          id="colorPicker"
+          class="colorPicker"
+          value="#000000"
+        />
+        <input
+          type="range"
+          id="thicknessSlider"
+          class="thicknessSlider"
+          min="1"
+          max="100"
+          value="1"
+        />
+        <input
+          type="range"
+          id="eraserSizeSlider"
+          class="eraserSizeSlider"
+          min="1"
+          max="50"
+          value="20"
+        />
+        <input
+          type="color"
+          id="bgColorPicker"
+          class="bgColorPicker"
+          value="#FFFFEF"
+        />
       </div>
     </div>
     <div class="toolbar">
@@ -230,7 +250,7 @@
       const undoStack = [];
 
       let isDrawing = false;
-      let currentMode = "Pencil";
+      let currentMode = "pencil";
       let currentColor = "#000000";
       let currentThickness = 1;
       let eraserSize = 20;
@@ -243,10 +263,10 @@
 
       function showTools(mode) {
         const tools = {
-          Pencil: ["colorPicker", "thicknessSlider"],
-          Bucket: ["colorPicker"],
-          Eraser: ["eraserSizeSlider"],
-          Background: ["bgColorPicker"],
+          pencil: ["colorPicker", "thicknessSlider"],
+          bucket: ["colorPicker"],
+          eraser: ["eraserSizeSlider"],
+          background: ["bgColorPicker"],
         };
         Object.values(tools).forEach((ids) =>
           ids.forEach(
@@ -271,11 +291,21 @@
         document.getElementsByName("mode").forEach((radio) => {
           radio.addEventListener("change", (event) => {
             currentMode = event.target.value;
+            const capitalizedMode =
+              currentMode.charAt(0).toUpperCase() + currentMode.slice(1);
+            document.body.className = `tool-${currentMode}`;
             eraserIndicator.style.display = "none";
-            document.getElementById("mode-label").textContent = currentMode;
+            document.getElementById("mode-label").textContent = capitalizedMode;
             showTools(currentMode);
           });
         });
+
+        // 初期状態の設定
+        const initialMode = document.querySelector(
+          'input[name="mode"]:checked'
+        ).value;
+        document.getElementById("mode-label").textContent =
+          initialMode.charAt(0).toUpperCase() + initialMode.slice(1);
 
         document
           .getElementById("colorPicker")
@@ -314,7 +344,7 @@
         document.getElementById("undo").addEventListener("click", undo);
 
         fgCanvas.addEventListener("click", (event) => {
-          if (currentMode === "Bucket") {
+          if (currentMode === "bucket") {
             const { x, y } = getPosition(event);
             const fillColor = hexToRgbA(
               document.getElementById("colorPicker").value
@@ -364,22 +394,22 @@
       function handleStart(event) {
         const { x, y } = getPosition(event);
 
-        if (currentMode === "Pencil") {
+        if (currentMode === "pencil") {
           eraserIndicator.style.display = "none";
           startDrawing(x, y);
           isDrawing = true;
-        } else if (currentMode === "Eraser") {
+        } else if (currentMode === "eraser") {
           setIndicatorPosition(eraserIndicator, event);
         }
       }
 
       function handleMove(event) {
-        if (!isDrawing && currentMode !== "Eraser") return;
+        if (!isDrawing && currentMode !== "eraser") return;
         const { x, y } = getPosition(event);
 
-        if (isDrawing && currentMode === "Pencil") {
+        if (isDrawing && currentMode === "pencil") {
           drawLine(x, y);
-        } else if (currentMode === "Eraser") {
+        } else if (currentMode === "eraser") {
           const withinCanvasBounds =
             x - eraserSize / 2 > 0 &&
             x + eraserSize / 2 < CANVAS_WIDTH &&
