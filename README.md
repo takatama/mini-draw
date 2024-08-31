@@ -18,7 +18,7 @@ mini-draw is a lightweight and minimalistic drawing tool built with vanilla Java
 
 ## Demo
 
-[View the mini-draw demo](https://codepen.io/takatama/full/ZEdMxNm)
+<a href="https://mini-draw.pages.dev/" target="_blank">View the mini-draw demo</a>
 
 ## Installation and Usage
 

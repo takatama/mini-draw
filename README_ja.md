@@ -18,7 +18,7 @@ mini-draw は軽量でシンプルなお絵描きツールです。基本的な�
 
 ## デモ
 
-[mini-draw デモを見る](https://codepen.io/takatama/full/ZEdMxNm)
+<a href="https://mini-draw.pages.dev/" target="_blank">mini-draw のデモを見る</a>
 
 ## インストールと使用方法
 
