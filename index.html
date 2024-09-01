@@ -259,8 +259,11 @@
     <div id="eraser-indicator" class="eraser-indicator"></div>
 
     <script>
-      const CANVAS_WIDTH = 340;
-      const CANVAS_HEIGHT = 340;
+      const CANVAS_SIZE = 340;
+      const DEFAULT_PENCIL_COLOR = "#000000";
+      const DEFAULT_BG_COLOR = "#FFFFEF";
+      const DEFAULT_THICKNESS = 1;
+      const DEFAULT_ERASER_SIZE = 20;
 
       const bgCanvas = document.getElementById("bg-canvas");
       const bgCtx = bgCanvas.getContext("2d");
@@ -271,10 +274,13 @@
       const undoStack = [];
 
       let isDrawing = false;
-      let currentMode = "pencil";
-      let currentColor = "#000000";
-      let currentThickness = 1;
-      let eraserSize = 20;
+
+      const state = {
+        mode: "pencil",
+        color: DEFAULT_PENCIL_COLOR,
+        thickness: DEFAULT_THICKNESS,
+        eraserSize: DEFAULT_ERASER_SIZE,
+      };
 
       function initialize() {
         setupEventListeners();
@@ -282,21 +288,23 @@
       }
 
       function setupEventListeners() {
-        fgCanvas.addEventListener("touchstart", handleStart);
-        fgCanvas.addEventListener("touchmove", handleMove);
-        fgCanvas.addEventListener("touchend", handleEnd);
+        const canvasEvents = ["touchstart", "mousedown"];
+        canvasEvents.forEach((eventType) =>
+          fgCanvas.addEventListener(eventType, handleStart)
+        );
 
-        fgCanvas.addEventListener("mousedown", handleStart);
+        fgCanvas.addEventListener("touchmove", handleMove);
         fgCanvas.addEventListener("mousemove", handleMove);
+        fgCanvas.addEventListener("touchend", handleEnd);
         fgCanvas.addEventListener("mouseup", handleEnd);
         fgCanvas.addEventListener("mouseout", handleEnd);
 
         document.getElementsByName("mode").forEach((radio) => {
           radio.addEventListener("change", (event) => {
-            currentMode = event.target.value;
+            state.mode = event.target.value;
             document.getElementById(
               "mode-tools"
-            ).className = `mode-${currentMode}`;
+            ).className = `mode-${state.mode}`;
             eraserIndicator.style.display = "none";
           });
         });
@@ -304,21 +312,21 @@
         document
           .getElementById("fg-color-picker")
           .addEventListener("input", (event) => {
-            currentColor = event.target.value;
+            state.color = event.target.value;
           });
 
         document
           .getElementById("thickness-slider")
           .addEventListener("input", (event) => {
-            currentThickness = event.target.value;
+            state.thickness = event.target.value;
           });
 
         document
           .getElementById("eraser-size-slider")
           .addEventListener("input", (event) => {
-            eraserSize = event.target.value;
-            eraserIndicator.style.width = eraserSize + "px";
-            eraserIndicator.style.height = eraserSize + "px";
+            state.eraserSize = event.target.value;
+            eraserIndicator.style.width = state.eraserSize + "px";
+            eraserIndicator.style.height = state.eraserSize + "px";
           });
 
         document
@@ -338,7 +346,7 @@
         document.getElementById("undo").addEventListener("click", undo);
 
         fgCanvas.addEventListener("click", (event) => {
-          if (currentMode === "bucket") {
+          if (state.mode === "bucket") {
             const { x, y } = getPosition(event);
             const fillColor = hexToRgbA(
               document.getElementById("fg-color-picker").value
@@ -388,29 +396,29 @@
       function handleStart(event) {
         const { x, y } = getPosition(event);
 
-        if (currentMode === "pencil") {
+        if (state.mode === "pencil") {
           eraserIndicator.style.display = "none";
           startDrawing(x, y);
           isDrawing = true;
           saveState();
-        } else if (currentMode === "eraser") {
+        } else if (state.mode === "eraser") {
           saveState();
           setIndicatorPosition(eraserIndicator, event);
         }
       }
 
       function handleMove(event) {
-        if (!isDrawing && currentMode !== "eraser") return;
+        if (!isDrawing && state.mode !== "eraser") return;
         const { x, y } = getPosition(event);
 
-        if (isDrawing && currentMode === "pencil") {
+        if (isDrawing && state.mode === "pencil") {
           drawLine(x, y);
-        } else if (currentMode === "eraser") {
+        } else if (state.mode === "eraser") {
           const withinCanvasBounds =
-            x - eraserSize / 2 > 0 &&
-            x + eraserSize / 2 < CANVAS_WIDTH &&
-            y - eraserSize / 2 > 0 &&
-            y + eraserSize / 2 < CANVAS_HEIGHT;
+            x - state.eraserSize / 2 > 0 &&
+            x + state.eraserSize / 2 < CANVAS_SIZE &&
+            y - state.eraserSize / 2 > 0 &&
+            y + state.eraserSize / 2 < CANVAS_SIZE;
           eraserIndicator.style.display = withinCanvasBounds ? "block" : "none";
           setIndicatorPosition(eraserIndicator, event);
           if (event.buttons === 1 || event.touches) {
@@ -433,11 +441,11 @@
       function setIndicatorPosition(indicator, event) {
         const x =
           (event.clientX || event.touches[0].clientX) -
-          eraserSize / 2 +
+          state.eraserSize / 2 +
           window.scrollX;
         const y =
           (event.clientY || event.touches[0].clientY) -
-          eraserSize / 2 +
+          state.eraserSize / 2 +
           window.scrollY;
         indicator.style.left = x + "px";
         indicator.style.top = y + "px";
@@ -446,13 +454,13 @@
       function startDrawing(x, y) {
         fgCtx.lineCap = "round";
         fgCtx.lineJoin = "round";
+        fgCtx.strokeStyle = state.color;
+        fgCtx.lineWidth = state.thickness;
         fgCtx.beginPath();
         fgCtx.moveTo(x, y);
       }
 
       function drawLine(x, y) {
-        fgCtx.strokeStyle = currentColor;
-        fgCtx.lineWidth = currentThickness;
         fgCtx.lineTo(x, y);
         fgCtx.stroke();
       }
@@ -461,7 +469,7 @@
         fgCtx.save();
         fgCtx.globalCompositeOperation = "destination-out";
         fgCtx.beginPath();
-        fgCtx.arc(x, y, eraserSize / 2, 0, Math.PI * 2, false);
+        fgCtx.arc(x, y, state.eraserSize / 2, 0, Math.PI * 2, false);
         fgCtx.fill();
         fgCtx.restore();
       }
