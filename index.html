@@ -497,9 +497,6 @@
           while (pixelStack.length) {
             const newPos = pixelStack.pop();
             let [x, y] = newPos;
-
-            console.log(`Popped position: (${x}, ${y})`);
-
             let currentPos = (y * canvasWidth + x) * 4;
 
             while (
@@ -519,14 +516,12 @@
               colorMatch(getColorAt(data, currentPos), startColor)
             ) {
               setColorAt(data, currentPos, fillColor);
-              console.log(`Filling position: (${x}, ${y})`);
 
               if (x > 0) {
                 if (colorMatch(getColorAt(data, currentPos - 4), startColor)) {
                   if (!reachLeft) {
                     pixelStack.push([x - 1, y]);
                     reachLeft = true;
-                    console.log(`Pushed left: (${x - 1}, ${y})`);
                   }
                 } else if (reachLeft) {
                   reachLeft = false;
@@ -538,7 +533,6 @@
                   if (!reachRight) {
                     pixelStack.push([x + 1, y]);
                     reachRight = true;
-                    console.log(`Pushed right: (${x + 1}, ${y})`);
                   }
                 } else if (reachRight) {
                   reachRight = false;
