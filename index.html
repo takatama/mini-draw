@@ -106,6 +106,17 @@
       #undo {
         margin-left: 20px;
       }
+
+      .tool {
+        display: none;
+      }
+
+      .mode-pencil .tool-pencil,
+      .mode-bucket .tool-bucket,
+      .mode-eraser .tool-eraser,
+      .mode-background .tool-background {
+        display: block;
+      }
     </style>
   </head>
 
@@ -205,36 +216,41 @@
       <button id="undo">Undo</button>
     </div>
     <div class="toolbar container-width">
-      <div class="tool-group">
-        <label id="mode-label">Pencil</label>
-        <input
-          type="color"
-          id="fg-color-picker"
-          class="fg-color-picker"
-          value="#000000"
-        />
-        <input
-          type="range"
-          id="thickness-slider"
-          class="thickness-slider"
-          min="1"
-          max="100"
-          value="1"
-        />
-        <input
-          type="range"
-          id="eraser-size-slider"
-          class="eraser-size-slider"
-          min="1"
-          max="50"
-          value="20"
-        />
-        <input
-          type="color"
-          id="bg-color-picker"
-          class="bg-color-picker"
-          value="#FFFFEF"
-        />
+      <div id="mode-tools" class="mode-pencil">
+        <div class="tool-group">
+          <label class="tool tool-pencil">Pencil</label>
+          <label class="tool tool-bucket">Bucket</label>
+          <input
+            type="color"
+            id="fg-color-picker"
+            class="tool tool-pencil tool-bucket"
+            value="#000000"
+          />
+          <input
+            type="range"
+            id="thickness-slider"
+            class="tool tool-pencil"
+            min="1"
+            max="100"
+            value="1"
+          />
+          <label class="tool tool-eraser">Eraser</label>
+          <input
+            type="range"
+            id="eraser-size-slider"
+            class="tool tool-eraser"
+            min="1"
+            max="50"
+            value="20"
+          />
+          <label class="tool tool-background">Background</label>
+          <input
+            type="color"
+            id="bg-color-picker"
+            class="tool tool-background"
+            value="#FFFFEF"
+          />
+        </div>
       </div>
     </div>
     <div class="toolbar">
@@ -263,24 +279,6 @@
       function initialize() {
         setupEventListeners();
         clearCanvas();
-        showTools(currentMode);
-      }
-
-      function showTools(mode) {
-        const tools = {
-          pencil: ["fg-color-picker", "thickness-slider"],
-          bucket: ["fg-color-picker"],
-          eraser: ["eraser-size-slider"],
-          background: ["bg-color-picker"],
-        };
-        Object.values(tools).forEach((ids) =>
-          ids.forEach(
-            (id) => (document.getElementById(id).style.display = "none")
-          )
-        );
-        tools[mode].forEach(
-          (id) => (document.getElementById(id).style.display = "block")
-        );
       }
 
       function setupEventListeners() {
@@ -296,11 +294,10 @@
         document.getElementsByName("mode").forEach((radio) => {
           radio.addEventListener("change", (event) => {
             currentMode = event.target.value;
-            const capitalizedMode =
-              currentMode.charAt(0).toUpperCase() + currentMode.slice(1);
-            document.getElementById("mode-label").textContent = capitalizedMode;
+            document.getElementById(
+              "mode-tools"
+            ).className = `mode-${currentMode}`;
             eraserIndicator.style.display = "none";
-            showTools(currentMode);
           });
         });
 
