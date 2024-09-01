@@ -392,7 +392,9 @@
           eraserIndicator.style.display = "none";
           startDrawing(x, y);
           isDrawing = true;
+          saveState();
         } else if (currentMode === "eraser") {
+          saveState();
           setIndicatorPosition(eraserIndicator, event);
         }
       }
@@ -446,7 +448,6 @@
         fgCtx.lineJoin = "round";
         fgCtx.beginPath();
         fgCtx.moveTo(x, y);
-        saveState();
       }
 
       function drawLine(x, y) {
