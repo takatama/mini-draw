@@ -298,19 +298,11 @@
             currentMode = event.target.value;
             const capitalizedMode =
               currentMode.charAt(0).toUpperCase() + currentMode.slice(1);
-            document.body.className = `tool-${currentMode}`;
-            eraserIndicator.style.display = "none";
             document.getElementById("mode-label").textContent = capitalizedMode;
+            eraserIndicator.style.display = "none";
             showTools(currentMode);
           });
         });
-
-        // 初期状態の設定
-        const initialMode = document.querySelector(
-          'input[name="mode"]:checked'
-        ).value;
-        document.getElementById("mode-label").textContent =
-          initialMode.charAt(0).toUpperCase() + initialMode.slice(1);
 
         document
           .getElementById("fg-color-picker")
