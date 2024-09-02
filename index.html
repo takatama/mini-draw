@@ -8,10 +8,20 @@
 
   <body>
     <div id="app"></div>
-    <script type="module" src="src/main.js"></script>
     <script type="module">
-      import MiniDraw from "./src/main.js";
-      MiniDraw.init("app");
+      if (import.meta.env.PROD) {
+        const script = document.createElement("script");
+        script.src = "./dist/mini-draw.umd.js";
+        script.onload = () => {
+          MiniDraw.init("app");
+        };
+        document.body.appendChild(script);
+      } else {
+        import("./src/main.js").then((module) => {
+          const MiniDraw = module.default;
+          MiniDraw.init("app");
+        });
+      }
     </script>
   </body>
 </html>
