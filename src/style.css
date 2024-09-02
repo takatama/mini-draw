@@ -1,0 +1,106 @@
+.md-container {
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.md-canvas-container {
+  position: relative;
+  width: 340px;
+  height: 340px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.md-spinner {
+  width: 100px;
+  height: 100px;
+  border: 20px solid lightgray;
+  border-top: 20px solid gray;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: none;
+  z-index: 10;
+}
+
+.md-container canvas {
+  border: 1px solid #000;
+  touch-action: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.md-toolbar {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 340px;
+  width: 100%;
+}
+
+.md-tool-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.md-eraser-indicator {
+  border: 1px dashed black;
+  border-radius: 50%;
+  position: absolute;
+  pointer-events: none;
+  display: none;
+  width: 20px;
+  height: 20px;
+}
+
+.md-container label {
+  margin-bottom: 5px;
+}
+
+.md-container img {
+  max-width: 340px;
+}
+
+.md-container svg {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+
+.md-container #md-undo {
+  margin-left: 20px;
+}
+
+.md-container #md-clear-canvas {
+  margin-top: 10px;
+}
+
+.md-tool {
+  display: none;
+}
+
+.mode-pencil .md-tool-pencil,
+.mode-bucket .md-tool-bucket,
+.mode-eraser .md-tool-eraser,
+.mode-background .md-tool-background {
+  display: block;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
