@@ -406,7 +406,6 @@
         document
           .getElementById("fg-color-picker")
           .addEventListener("input", (event) => {
-            saveState();
             state.fgColor = event.target.value;
           });
 
@@ -514,7 +513,7 @@
       function startDrawing(x, y) {
         fgCtx.lineCap = "round";
         fgCtx.lineJoin = "round";
-        fgCtx.strokeStyle = state.color;
+        fgCtx.strokeStyle = state.fgColor;
         fgCtx.lineWidth = state.thickness;
         fgCtx.beginPath();
         fgCtx.moveTo(x, y);
