@@ -1,5 +1,13 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  assetsInclude: ["**/*.html"],
+  assetsInclude: ["**/*.html", "**/*.css"],
+  build: {
+    lib: {
+      entry: "src/main.js",
+      name: "MiniDraw",
+      fileName: (format) => `mini-draw.${format}.js`,
+      formats: ["es", "umd"],
+    },
+  },
 });

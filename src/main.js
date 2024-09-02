@@ -1,5 +1,5 @@
 import template from "./template.html?raw";
-import "./style.css";
+import style from "./style.css?raw";
 
 const CANVAS_SIZE = 340;
 const DEFAULT_PENCIL_COLOR = "#000000";
@@ -15,6 +15,11 @@ const MiniDraw = (function () {
       return;
     }
     container.innerHTML = template;
+
+    const styleElement = document.createElement("style");
+    styleElement.textContent = style;
+    document.head.appendChild(styleElement);
+
     initialize(container);
   }
 
