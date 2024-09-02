@@ -20,21 +20,101 @@ mini-draw は軽量でシンプルなお絵描きツールです。基本的な�
 
 <a href="https://mini-draw.pages.dev/" target="_blank">mini-draw のデモを見る</a>
 
-## インストールと使用方法
+## インストールと使い方
 
-1. リポジトリをクローンします。
+### 基本的な使い方
+
+1. `mini-draw.umd.js`スクリプトを HTML ファイルに追加します。
+
+2. Mini Draw ウィジェットを挿入したい場所にコンテナ要素を作成します。例:
+
+   ```html
+   <div id="app"></div>
+   ```
+
+3. `MiniDraw.init()`を呼び出して、コンテナ要素の ID を渡します:
+
+   ```html
+   <script src="path/to/mini-draw.umd.js"></script>
+   <script>
+     MiniDraw.init("app");
+   </script>
+   ```
+
+次に、完全な例です:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mini Draw</title>
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script src="path/to/mini-draw.umd.js"></script>
+    <script>
+      MiniDraw.init("app");
+    </script>
+  </body>
+</html>
+```
+
+### 開発環境のセットアップ
+
+コードを修正したりプロジェクトに貢献したりする場合は、次の手順で開発環境をセットアップします:
+
+1. リポジトリをクローンします:
 
    ```bash
    git clone https://github.com/takatama/mini-draw.git
    ```
 
-2. プロジェクトディレクトリに移動します。
+2. プロジェクトディレクトリに移動します:
 
    ```bash
    cd mini-draw
    ```
 
-3. `index.html` をブラウザで開いて、ツールを使い始めます。
+3. 依存関係をインストールします:
+
+   ```bash
+   npm install
+   ```
+
+4. Vite で開発サーバーを起動します:
+
+   ```bash
+   npm run dev
+   ```
+
+5. ブラウザで`http://localhost:5173`を開いて、アプリを確認します。
+
+### プロダクション用ビルド
+
+プロジェクトをプロダクション用にビルドするには、次のコマンドを実行します:
+
+```bash
+npm run build
+```
+
+これにより、`dist`ディレクトリにビルドファイルが作成されます。
+
+### ビルドのテスト
+
+ローカルでプロダクションビルドをテストするには、提供されたテストセットアップを使用します:
+
+1. ビルドプロセスが完了しており、`dist`ディレクトリにビルドファイルが含まれていることを確認します。
+
+2. `test`ディレクトリに移動します:
+
+   ```bash
+   cd test
+   ```
+
+3. ブラウザで`index.html`を開き、ビルド済みの`mini-draw.umd.js`が正しく動作することを確認します。
 
 ## 使用技術
 

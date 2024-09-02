@@ -22,6 +22,50 @@ mini-draw is a lightweight and minimalistic drawing tool built with vanilla Java
 
 ## Installation and Usage
 
+### Basic Usage
+
+1. Include the `mini-draw.umd.js` script in your HTML file.
+
+2. Create a container element in your HTML where you want the Mini Draw widget to be inserted. For example:
+
+   ```html
+   <div id="app"></div>
+   ```
+
+3. Initialize the Mini Draw widget by calling `MiniDraw.init()` and passing the ID of the container element:
+
+   ```html
+   <script src="path/to/mini-draw.umd.js"></script>
+   <script>
+     MiniDraw.init("app");
+   </script>
+   ```
+
+Here is a complete example:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mini Draw</title>
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script src="path/to/mini-draw.umd.js"></script>
+    <script>
+      MiniDraw.init("app");
+    </script>
+  </body>
+</html>
+```
+
+### Development Setup
+
+If you want to modify the code or contribute to the project, follow these steps to set up the development environment:
+
 1. Clone the repository:
 
    ```bash
@@ -34,12 +78,49 @@ mini-draw is a lightweight and minimalistic drawing tool built with vanilla Java
    cd mini-draw
    ```
 
-3. Open `index.html` in your browser to start using the tool.
+3. Install the dependencies:
+
+   ```bash
+   npm install
+   ```
+
+4. Start the development server with Vite:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Open your browser and navigate to `http://localhost:5173` to see the app in action.
+
+### Building for Production
+
+To build the project for production, run:
+
+```bash
+npm run build
+```
+
+This will create the build files in the `dist` directory.
+
+### Testing the Build
+
+To test the production build locally, you can use the provided test setup:
+
+1. Ensure that the build process has been completed and the `dist` directory contains the built files.
+
+2. Navigate to the `test` directory:
+
+   ```bash
+   cd test
+   ```
+
+3. Open index.html in your browser to verify that the built mini-draw.umd.js is working correctly.
 
 ## Technologies Used
 
 - HTML5 Canvas
 - JavaScript (Vanilla JS)
+- Vite for development and build process
 
 ## Contributing
 
