@@ -453,8 +453,8 @@
         const stateSnapshot = {
           background: bgCanvas.toDataURL(),
           drawing: fgCanvas.toDataURL(),
-          fgColor: state.fgColor, // fg-color の保存
-          bgColor: state.bgColor, // bg-color の保存
+          fgColor: state.fgColor,
+          bgColor: state.bgColor,
         };
         undoStack.push(stateSnapshot);
       }
@@ -494,7 +494,7 @@
         const rect = fgCanvas.getBoundingClientRect();
         const x = (event.clientX || event.touches[0].clientX) - rect.left;
         const y = (event.clientY || event.touches[0].clientY) - rect.top;
-        return { x, y };
+        return { x: Math.floor(x), y: Math.floor(y) };
       }
 
       function setIndicatorPosition(indicator, event) {
@@ -534,8 +534,6 @@
       }
 
       function bucketFill(x, initialY, fillColor) {
-        x = Math.floor(x); // 座標を整数に丸める
-        initialY = Math.floor(initialY); // 座標を整数に丸める
         console.log(
           `Starting fill at (${x}, ${initialY}) with color:`,
           fillColor
