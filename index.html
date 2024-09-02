@@ -346,7 +346,8 @@
 
       const state = {
         mode: pencilMode,
-        color: DEFAULT_PENCIL_COLOR,
+        fgColor: DEFAULT_PENCIL_COLOR,
+        bgColor: DEFAULT_BG_COLOR,
         thickness: DEFAULT_THICKNESS,
         eraserSize: DEFAULT_ERASER_SIZE,
       };
@@ -405,7 +406,7 @@
         document
           .getElementById("fg-color-picker")
           .addEventListener("input", (event) => {
-            state.color = event.target.value;
+            state.fgColor = event.target.value;
           });
 
         document
@@ -426,6 +427,7 @@
           .getElementById("bg-color-picker")
           .addEventListener("input", (event) => {
             saveState();
+            state.bgColor = event.target.value;
             bgCtx.fillStyle = event.target.value;
             bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
             document
@@ -448,11 +450,13 @@
       }
 
       function saveState() {
-        const state = {
+        const stateSnapshot = {
           background: bgCanvas.toDataURL(),
           drawing: fgCanvas.toDataURL(),
+          fgColor: state.fgColor, // fg-color の保存
+          bgColor: state.bgColor, // bg-color の保存
         };
-        undoStack.push(state);
+        undoStack.push(stateSnapshot);
       }
 
       function undo() {
@@ -472,6 +476,17 @@
             fgCtx.clearRect(0, 0, fgCanvas.width, fgCanvas.height);
             fgCtx.drawImage(lastDrawing, 0, 0);
           };
+
+          state.fgColor = lastState.fgColor;
+          document.getElementById("fg-color-picker").value = lastState.fgColor;
+
+          state.bgColor = lastState.bgColor;
+          bgCtx.fillStyle = lastState.bgColor;
+          bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+          document.getElementById("bg-color-picker").value = lastState.bgColor;
+          document
+            .getElementById("bg-icon")
+            .setAttribute("fill", lastState.bgColor);
         }
       }
 
@@ -498,7 +513,7 @@
       function startDrawing(x, y) {
         fgCtx.lineCap = "round";
         fgCtx.lineJoin = "round";
-        fgCtx.strokeStyle = state.color;
+        fgCtx.strokeStyle = state.fgColor;
         fgCtx.lineWidth = state.thickness;
         fgCtx.beginPath();
         fgCtx.moveTo(x, y);
