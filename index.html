@@ -273,10 +273,79 @@
       const eraserIndicator = document.getElementById("eraser-indicator");
       const undoStack = [];
 
-      let isDrawing = false;
+      const pencilMode = {
+        isDrawing: false,
+        handleStart(event) {
+          const { x, y } = getPosition(event);
+          eraserIndicator.style.display = "none";
+          startDrawing(x, y);
+          this.isDrawing = true;
+          saveState();
+        },
+        handleMove(event) {
+          if (!this.isDrawing) return;
+          const { x, y } = getPosition(event);
+          drawLine(x, y);
+        },
+        handleEnd() {
+          this.isDrawing = false;
+        },
+      };
+
+      const bucketMode = {
+        handleStart(event) {
+          const { x, y } = getPosition(event);
+          const fillColor = hexToRgbA(
+            document.getElementById("fg-color-picker").value
+          );
+          saveState();
+          bucketFill(x, y, fillColor);
+        },
+        handleMove(event) {},
+        handleEnd() {},
+      };
+
+      const eraserMode = {
+        handleStart(event) {
+          saveState();
+          setIndicatorPosition(eraserIndicator, event);
+        },
+        handleMove(event) {
+          const { x, y } = getPosition(event);
+          const withinCanvasBounds =
+            x - state.eraserSize / 2 > 0 &&
+            x + state.eraserSize / 2 < CANVAS_SIZE &&
+            y - state.eraserSize / 2 > 0 &&
+            y + state.eraserSize / 2 < CANVAS_SIZE;
+          eraserIndicator.style.display = withinCanvasBounds ? "block" : "none";
+          setIndicatorPosition(eraserIndicator, event);
+          if (event.buttons === 1 || event.touches) {
+            erase(x, y);
+          }
+        },
+        handleEnd() {},
+      };
+
+      const backgroundMode = {
+        handleStart(event) {},
+        handleMove(event) {},
+        handleEnd() {},
+      };
+
+      function handleStart(event) {
+        state.mode.handleStart(event);
+      }
+
+      function handleMove(event) {
+        state.mode.handleMove(event);
+      }
+
+      function handleEnd() {
+        state.mode.handleEnd(event);
+      }
 
       const state = {
-        mode: "pencil",
+        mode: pencilMode,
         color: DEFAULT_PENCIL_COLOR,
         thickness: DEFAULT_THICKNESS,
         eraserSize: DEFAULT_ERASER_SIZE,
@@ -288,24 +357,48 @@
       }
 
       function setupEventListeners() {
-        const canvasEvents = ["touchstart", "mousedown"];
-        canvasEvents.forEach((eventType) =>
-          fgCanvas.addEventListener(eventType, handleStart)
-        );
+        function addCanvasEventListener_(canvas, eventTypes, func) {
+          eventTypes.forEach((eventType) =>
+            canvas.addEventListener(eventType, func)
+          );
+        }
 
-        fgCanvas.addEventListener("touchmove", handleMove);
-        fgCanvas.addEventListener("mousemove", handleMove);
-        fgCanvas.addEventListener("touchend", handleEnd);
-        fgCanvas.addEventListener("mouseup", handleEnd);
-        fgCanvas.addEventListener("mouseout", handleEnd);
+        addCanvasEventListener_(
+          fgCanvas,
+          ["touchstart", "mousedown"],
+          handleStart
+        );
+        addCanvasEventListener_(
+          fgCanvas,
+          ["touchmove", "mousemove"],
+          handleMove
+        );
+        addCanvasEventListener_(
+          fgCanvas,
+          ["touchend", "mouseup", "mouseout"],
+          handleEnd
+        );
 
         document.getElementsByName("mode").forEach((radio) => {
           radio.addEventListener("change", (event) => {
-            state.mode = event.target.value;
+            eraserIndicator.style.display = "none";
             document.getElementById(
               "mode-tools"
-            ).className = `mode-${state.mode}`;
-            eraserIndicator.style.display = "none";
+            ).className = `mode-${event.target.value}`;
+            switch (event.target.value) {
+              case "pencil":
+                state.mode = pencilMode;
+                break;
+              case "eraser":
+                state.mode = eraserMode;
+                break;
+              case "bucket":
+                state.mode = bucketMode;
+                break;
+              case "background":
+                state.mode = backgroundMode;
+                break;
+            }
           });
         });
 
@@ -344,17 +437,6 @@
           .getElementById("clear-canvas")
           .addEventListener("click", clearCanvas);
         document.getElementById("undo").addEventListener("click", undo);
-
-        fgCanvas.addEventListener("click", (event) => {
-          if (state.mode === "bucket") {
-            const { x, y } = getPosition(event);
-            const fillColor = hexToRgbA(
-              document.getElementById("fg-color-picker").value
-            );
-            saveState();
-            bucketFill(x, y, fillColor);
-          }
-        });
       }
 
       function clearCanvas() {
@@ -391,44 +473,6 @@
             fgCtx.drawImage(lastDrawing, 0, 0);
           };
         }
-      }
-
-      function handleStart(event) {
-        const { x, y } = getPosition(event);
-
-        if (state.mode === "pencil") {
-          eraserIndicator.style.display = "none";
-          startDrawing(x, y);
-          isDrawing = true;
-          saveState();
-        } else if (state.mode === "eraser") {
-          saveState();
-          setIndicatorPosition(eraserIndicator, event);
-        }
-      }
-
-      function handleMove(event) {
-        if (!isDrawing && state.mode !== "eraser") return;
-        const { x, y } = getPosition(event);
-
-        if (isDrawing && state.mode === "pencil") {
-          drawLine(x, y);
-        } else if (state.mode === "eraser") {
-          const withinCanvasBounds =
-            x - state.eraserSize / 2 > 0 &&
-            x + state.eraserSize / 2 < CANVAS_SIZE &&
-            y - state.eraserSize / 2 > 0 &&
-            y + state.eraserSize / 2 < CANVAS_SIZE;
-          eraserIndicator.style.display = withinCanvasBounds ? "block" : "none";
-          setIndicatorPosition(eraserIndicator, event);
-          if (event.buttons === 1 || event.touches) {
-            erase(x, y);
-          }
-        }
-      }
-
-      function handleEnd() {
-        isDrawing = false;
       }
 
       function getPosition(event) {
