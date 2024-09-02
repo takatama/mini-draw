@@ -5,39 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mini Draw</title>
     <style>
-      body {
+      .md-container {
         margin: 0;
         padding: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        min-height: 100vh;
         width: 100%;
         box-sizing: border-box;
       }
 
-      .flex-center {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        width: 100%;
-        max-width: 340px;
-      }
-
-      .container-width {
-        max-width: 340px;
-        width: 100%;
-      }
-
-      .canvas-container {
+      .md-canvas-container {
         position: relative;
         width: 340px;
         height: 340px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
 
-      .spinner {
+      .md-spinner {
         width: 100px;
         height: 100px;
         border: 20px solid lightgray;
@@ -48,7 +36,7 @@
         z-index: 10;
       }
 
-      canvas {
+      .md-container canvas {
         border: 1px solid #000;
         touch-action: none;
         position: absolute;
@@ -56,20 +44,22 @@
         left: 0;
       }
 
-      .toolbar {
+      .md-toolbar {
         margin-top: 10px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        max-width: 340px;
+        width: 100%;
       }
 
-      .tool-group {
+      .md-tool-group {
         display: flex;
         align-items: center;
         gap: 10px;
       }
 
-      .eraser-indicator {
+      .md-eraser-indicator {
         border: 1px dashed black;
         border-radius: 50%;
         position: absolute;
@@ -77,6 +67,39 @@
         display: none;
         width: 20px;
         height: 20px;
+      }
+
+      .md-container label {
+        margin-bottom: 5px;
+      }
+
+      .md-container img {
+        max-width: 340px;
+      }
+
+      .md-container svg {
+        width: 24px;
+        height: 24px;
+        vertical-align: middle;
+      }
+
+      .md-container #md-undo {
+        margin-left: 20px;
+      }
+
+      .md-container #md-clear-canvas {
+        margin-top: 10px;
+      }
+
+      .md-tool {
+        display: none;
+      }
+
+      .mode-pencil .md-tool-pencil,
+      .mode-bucket .md-tool-bucket,
+      .mode-eraser .md-tool-eraser,
+      .mode-background .md-tool-background {
+        display: block;
       }
 
       @keyframes spin {
@@ -88,175 +111,146 @@
           transform: rotate(360deg);
         }
       }
-
-      label {
-        margin-bottom: 5px;
-      }
-
-      img {
-        max-width: 340px;
-      }
-
-      svg {
-        width: 24px;
-        height: 24px;
-        vertical-align: middle;
-      }
-
-      #undo {
-        margin-left: 20px;
-      }
-
-      .tool {
-        display: none;
-      }
-
-      .mode-pencil .tool-pencil,
-      .mode-bucket .tool-bucket,
-      .mode-eraser .tool-eraser,
-      .mode-background .tool-background {
-        display: block;
-      }
     </style>
   </head>
 
   <body>
-    <div class="canvas-container flex-center">
-      <canvas id="bg-canvas" width="340" height="340"></canvas>
-      <canvas id="fg-canvas" width="340" height="340"></canvas>
-      <div id="spinner" class="spinner"></div>
-    </div>
-    <div class="toolbar container-width">
-      <div class="tool-group">
-        <input
-          type="radio"
-          id="pencil-mode"
-          name="mode"
-          value="pencil"
-          checked
-        />
-        <label for="pencil-mode">
-          <!-- Pencil https://icons.getbootstrap.jp/ -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-pencil"
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"
-            />
-          </svg>
-        </label>
-
-        <input type="radio" id="bucket-mode" name="mode" value="bucket" />
-        <label for="bucket-mode">
-          <!-- Bucket https://icons.getbootstrap.jp/ -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-paint-bucket"
-            viewBox="0 0 16 16"
-            transform="scale(-1, 1)"
-          >
-            <path
-              d="M6.192 2.78c-.458-.677-.927-1.248-1.35-1.643a2.972 2.972 0 0 0-.71-.515c-.217-.104-.56-.205-.882-.02-.367.213-.427.63-.43.896-.003.304.064.664.173 1.044.196.687.556 1.528 1.035 2.402L.752 8.22c-.277.277-.269.656-.218.918.055.283.187.593.36.903.348.627.92 1.361 1.626 2.068.707.707 1.441 1.278 2.068 1.626.31.173.62.305.903.36.262.05.64.059.918-.218l5.615-5.615c.118.257.092.512.05.939-.03.292-.068.665-.073 1.176v.123h.003a1 1 0 0 0 1.993 0H14v-.057a1.01 1.01 0 0 0-.004-.117c-.055-1.25-.7-2.738-1.86-3.494a4.322 4.322 0 0 0-.211-.434c-.349-.626-.92-1.36-1.627-2.067-.707-.707-1.441-1.279-2.068-1.627-.31-.172-.62-.304-.903-.36-.262-.05-.64-.058-.918.219l-.217.216zM4.16 1.867c.381.356.844.922 1.311 1.632l-.704.705c-.382-.727-.66-1.402-.813-1.938a3.283 3.283 0 0 1-.131-.673c.091.061.204.15.337.274zm.394 3.965c.54.852 1.107 1.567 1.607 2.033a.5.5 0 1 0 .682-.732c-.453-.422-1.017-1.136-1.564-2.027l1.088-1.088c.054.12.115.243.183.365.349.627.92 1.361 1.627 2.068.706.707 1.44 1.278 2.068 1.626.122.068.244.13.365.183l-4.861 4.862a.571.571 0 0 1-.068-.01c-.137-.027-.342-.104-.608-.252-.524-.292-1.186-.8-1.846-1.46-.66-.66-1.168-1.32-1.46-1.846-.147-.265-.225-.47-.251-.607a.573.573 0 0 1-.01-.068l3.048-3.047zm2.87-1.935a2.44 2.44 0 0 1-.241-.561c.135.033.324.11.562.241.524.292 1.186.8 1.846 1.46.45.45.83.901 1.118 1.31a3.497 3.497 0 0 0-1.066.091 11.27 11.27 0 0 1-.76-.694c-.66-.66-1.167-1.322-1.458-1.847z"
-            />
-          </svg>
-        </label>
-
-        <input type="radio" id="eraser-mode" name="mode" value="eraser" />
-        <label for="eraser-mode">
-          <!-- Eraser https://icons.getbootstrap.jp/ -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-eraser"
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"
-            />
-          </svg>
-        </label>
-
-        <input
-          type="radio"
-          id="background-mode"
-          name="mode"
-          value="background"
-        />
-        <label for="background-mode">
-          <svg
-            id="bg-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="#FFFFEF"
-            class="bi bi-square-fill"
-            viewBox="0 0 16 16"
-          >
-            <rect
+    <div class="md-container">
+      <div class="md-canvas-container">
+        <canvas id="md-bg-canvas" width="340" height="340"></canvas>
+        <canvas id="md-fg-canvas" width="340" height="340"></canvas>
+        <div id="md-spinner" class="md-spinner"></div>
+      </div>
+      <div class="md-toolbar">
+        <div class="md-tool-group">
+          <input
+            type="radio"
+            id="md-pencil-mode"
+            name="mode"
+            value="pencil"
+            checked
+          />
+          <label for="md-pencil-mode">
+            <!-- Pencil https://icons.getbootstrap.jp/ -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
               width="16"
               height="16"
-              rx="2"
-              ry="2"
-              stroke="#000000"
-              stroke-width="1"
-            />
-          </svg>
-        </label>
+              fill="currentColor"
+              class="bi bi-pencil"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"
+              />
+            </svg>
+          </label>
+
+          <input type="radio" id="md-bucket-mode" name="mode" value="bucket" />
+          <label for="md-bucket-mode">
+            <!-- Bucket https://icons.getbootstrap.jp/ -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-paint-bucket"
+              viewBox="0 0 16 16"
+              transform="scale(-1, 1)"
+            >
+              <path
+                d="M6.192 2.78c-.458-.677-.927-1.248-1.35-1.643a2.972 2.972 0 0 0-.71-.515c-.217-.104-.56-.205-.882-.02-.367.213-.427.63-.43.896-.003.304.064.664.173 1.044.196.687.556 1.528 1.035 2.402L.752 8.22c-.277.277-.269.656-.218.918.055.283.187.593.36.903.348.627.92 1.361 1.626 2.068.707.707 1.441 1.278 2.068 1.626.31.173.62.305.903.36.262.05.64.059.918-.218l5.615-5.615c.118.257.092.512.05.939-.03.292-.068.665-.073 1.176v.123h.003a1 1 0 0 0 1.993 0H14v-.057a1.01 1.01 0 0 0-.004-.117c-.055-1.25-.7-2.738-1.86-3.494a4.322 4.322 0 0 0-.211-.434c-.349-.626-.92-1.36-1.627-2.067-.707-.707-1.441-1.279-2.068-1.627-.31-.172-.62-.304-.903-.36-.262-.05-.64-.058-.918.219l-.217.216zM4.16 1.867c.381.356.844.922 1.311 1.632l-.704.705c-.382-.727-.66-1.402-.813-1.938a3.283 3.283 0 0 1-.131-.673c.091.061.204.15.337.274zm.394 3.965c.54.852 1.107 1.567 1.607 2.033a.5.5 0 1 0 .682-.732c-.453-.422-1.017-1.136-1.564-2.027l1.088-1.088c.054.12.115.243.183.365.349.627.92 1.361 1.627 2.068.706.707 1.44 1.278 2.068 1.626.122.068.244.13.365.183l-4.861 4.862a.571.571 0 0 1-.068-.01c-.137-.027-.342-.104-.608-.252-.524-.292-1.186-.8-1.846-1.46-.66-.66-1.168-1.32-1.46-1.846-.147-.265-.225-.47-.251-.607a.573.573 0 0 1-.01-.068l3.048-3.047zm2.87-1.935a2.44 2.44 0 0 1-.241-.561c.135.033.324.11.562.241.524.292 1.186.8 1.846 1.46.45.45.83.901 1.118 1.31a3.497 3.497 0 0 0-1.066.091 11.27 11.27 0 0 1-.76-.694c-.66-.66-1.167-1.322-1.458-1.847z"
+              />
+            </svg>
+          </label>
+
+          <input type="radio" id="md-eraser-mode" name="mode" value="eraser" />
+          <label for="md-eraser-mode">
+            <!-- Eraser https://icons.getbootstrap.jp/ -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-eraser"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"
+              />
+            </svg>
+          </label>
+
+          <input
+            type="radio"
+            id="md-background-mode"
+            name="mode"
+            value="background"
+          />
+          <label for="md-background-mode">
+            <svg
+              id="bg-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="#FFFFEF"
+              class="bi bi-square-fill"
+              viewBox="0 0 16 16"
+            >
+              <rect
+                width="16"
+                height="16"
+                rx="2"
+                ry="2"
+                stroke="#000000"
+                stroke-width="1"
+              />
+            </svg>
+          </label>
+        </div>
+        <button id="md-undo">Undo</button>
       </div>
-      <button id="undo">Undo</button>
-    </div>
-    <div class="toolbar container-width">
-      <div id="mode-tools" class="mode-pencil">
-        <div class="tool-group">
-          <label class="tool tool-pencil">Pencil</label>
-          <label class="tool tool-bucket">Bucket</label>
-          <input
-            type="color"
-            id="fg-color-picker"
-            class="tool tool-pencil tool-bucket"
-            value="#000000"
-          />
-          <input
-            type="range"
-            id="thickness-slider"
-            class="tool tool-pencil"
-            min="1"
-            max="100"
-            value="1"
-          />
-          <label class="tool tool-eraser">Eraser</label>
-          <input
-            type="range"
-            id="eraser-size-slider"
-            class="tool tool-eraser"
-            min="1"
-            max="50"
-            value="20"
-          />
-          <label class="tool tool-background">Background</label>
-          <input
-            type="color"
-            id="bg-color-picker"
-            class="tool tool-background"
-            value="#FFFFEF"
-          />
+      <div class="md-toolbar">
+        <div id="md-mode-tools" class="mode-pencil">
+          <div class="md-tool-group">
+            <label class="md-tool md-tool-pencil">Pencil</label>
+            <label class="md-tool md-tool-bucket">Bucket</label>
+            <input
+              type="color"
+              id="md-fg-color-picker"
+              class="md-tool md-tool-pencil md-tool-bucket"
+              value="#000000"
+            />
+            <input
+              type="range"
+              id="md-thickness-slider"
+              class="md-tool md-tool-pencil"
+              min="1"
+              max="100"
+              value="1"
+            />
+            <label class="md-tool md-tool-eraser">Eraser</label>
+            <input
+              type="range"
+              id="md-eraser-size-slider"
+              class="md-tool md-tool-eraser"
+              min="1"
+              max="50"
+              value="20"
+            />
+            <label class="md-tool md-tool-background">Background</label>
+            <input
+              type="color"
+              id="md-bg-color-picker"
+              class="md-tool md-tool-background"
+              value="#FFFFEF"
+            />
+          </div>
         </div>
       </div>
+      <button id="md-clear-canvas">Clear</button>
+      <div id="md-eraser-indicator" class="md-eraser-indicator"></div>
     </div>
-    <div class="toolbar">
-      <button id="clear-canvas">Clear</button>
-    </div>
-    <div id="eraser-indicator" class="eraser-indicator"></div>
 
     <script>
       const CANVAS_SIZE = 340;
@@ -265,12 +259,12 @@
       const DEFAULT_THICKNESS = 1;
       const DEFAULT_ERASER_SIZE = 20;
 
-      const bgCanvas = document.getElementById("bg-canvas");
+      const bgCanvas = document.getElementById("md-bg-canvas");
       const bgCtx = bgCanvas.getContext("2d");
-      const fgCanvas = document.getElementById("fg-canvas");
+      const fgCanvas = document.getElementById("md-fg-canvas");
       fgCanvas.style.willReadFrequently = true;
       const fgCtx = fgCanvas.getContext("2d");
-      const eraserIndicator = document.getElementById("eraser-indicator");
+      const eraserIndicator = document.getElementById("md-eraser-indicator");
       const undoStack = [];
 
       const pencilMode = {
@@ -296,7 +290,7 @@
         handleStart(event) {
           const { x, y } = getPosition(event);
           const fillColor = hexToRgbA(
-            document.getElementById("fg-color-picker").value
+            document.getElementById("md-fg-color-picker").value
           );
           saveState();
           bucketFill(x, y, fillColor);
@@ -384,7 +378,7 @@
           radio.addEventListener("change", (event) => {
             eraserIndicator.style.display = "none";
             document.getElementById(
-              "mode-tools"
+              "md-mode-tools"
             ).className = `mode-${event.target.value}`;
             switch (event.target.value) {
               case "pencil":
@@ -404,19 +398,19 @@
         });
 
         document
-          .getElementById("fg-color-picker")
+          .getElementById("md-fg-color-picker")
           .addEventListener("input", (event) => {
             state.fgColor = event.target.value;
           });
 
         document
-          .getElementById("thickness-slider")
+          .getElementById("md-thickness-slider")
           .addEventListener("input", (event) => {
             state.thickness = event.target.value;
           });
 
         document
-          .getElementById("eraser-size-slider")
+          .getElementById("md-eraser-size-slider")
           .addEventListener("input", (event) => {
             state.eraserSize = event.target.value;
             eraserIndicator.style.width = state.eraserSize + "px";
@@ -424,7 +418,7 @@
           });
 
         document
-          .getElementById("bg-color-picker")
+          .getElementById("md-bg-color-picker")
           .addEventListener("input", (event) => {
             saveState();
             state.bgColor = event.target.value;
@@ -436,15 +430,15 @@
           });
 
         document
-          .getElementById("clear-canvas")
+          .getElementById("md-clear-canvas")
           .addEventListener("click", clearCanvas);
-        document.getElementById("undo").addEventListener("click", undo);
+        document.getElementById("md-undo").addEventListener("click", undo);
       }
 
       function clearCanvas() {
         fgCtx.clearRect(0, 0, fgCanvas.width, fgCanvas.height);
         bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-        bgCtx.fillStyle = document.getElementById("bg-color-picker").value;
+        bgCtx.fillStyle = document.getElementById("md-bg-color-picker").value;
         bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
         undoStack.length = 0;
       }
@@ -478,12 +472,14 @@
           };
 
           state.fgColor = lastState.fgColor;
-          document.getElementById("fg-color-picker").value = lastState.fgColor;
+          document.getElementById("md-fg-color-picker").value =
+            lastState.fgColor;
 
           state.bgColor = lastState.bgColor;
           bgCtx.fillStyle = lastState.bgColor;
           bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
-          document.getElementById("bg-color-picker").value = lastState.bgColor;
+          document.getElementById("md-bg-color-picker").value =
+            lastState.bgColor;
           document
             .getElementById("bg-icon")
             .setAttribute("fill", lastState.bgColor);
