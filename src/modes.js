@@ -1,6 +1,5 @@
 import { getPosition, startDrawing, drawLine, erase } from "./draw.js";
 import { bucketFill, hexToRgbA } from "./fill.js";
-import { CANVAS_SIZE } from "./components.js";
 
 const baseMode = {
   handleStart(event) {},
@@ -44,12 +43,13 @@ export function bucketMode(components, state) {
 
 export function eraserMode(components, state) {
   function updateEraserPosition(components, state, event) {
-    const { x, y } = getPosition(components.fgCanvas, event);
+    const canvas = components.fgCanvas;
+    const { x, y } = getPosition(canvas, event);
     const withinCanvasBounds =
       x - state.eraserSize / 2 > 0 &&
-      x + state.eraserSize / 2 < CANVAS_SIZE &&
+      x + state.eraserSize / 2 < canvas.width &&
       y - state.eraserSize / 2 > 0 &&
-      y + state.eraserSize / 2 < CANVAS_SIZE;
+      y + state.eraserSize / 2 < canvas.height;
 
     components.setEraserIndicatorVisibility(withinCanvasBounds);
     components.setEraserIndicatorPosition(state.eraserSize, event);

@@ -10,8 +10,6 @@ const CLEAR_CANVAS_BUTTON = "#md-clear-canvas";
 const UNDO_BUTTON = "#md-undo";
 const MODE_TOOLS = "#md-mode-tools";
 
-export const CANVAS_SIZE = 340;
-
 export function createComponents(container) {
   const fgCanvas = container.querySelector(FG_CANVAS);
   fgCanvas.style.willReadFrequently = true;
