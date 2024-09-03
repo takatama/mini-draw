@@ -7,24 +7,28 @@ import {
 
 export const createState = ({
   container,
-  bgCanvas,
-  bgCtx,
+  fgColor,
+  bgColor,
+  thickness,
+  eraserSize,
   fgCanvas,
   fgCtx,
+  bgCanvas,
+  bgCtx,
   eraserIndicator,
 }) => {
   const state = {
-    fgColor: "#000000",
-    bgColor: "#FFFFEF",
-    thickness: 1,
-    eraserSize: 20,
-    undoStack: [],
     container,
-    bgCanvas,
-    bgCtx,
+    fgColor,
+    bgColor,
+    thickness,
+    eraserSize,
     fgCanvas,
     fgCtx,
+    bgCanvas,
+    bgCtx,
     eraserIndicator,
+    undoStack: [],
     mode: null,
   };
 
