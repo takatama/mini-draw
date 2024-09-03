@@ -1,11 +1,11 @@
-export function bucketFill(state, x, initialY, fillColor) {
+export function bucketFill(canvas, ctx, x, initialY, fillColor) {
   console.log(`Starting fill at (${x}, ${initialY}) with color:`, fillColor);
 
   let pixelStack = [[x, initialY]];
-  const canvasWidth = state.fgCanvas.width;
-  const canvasHeight = state.fgCanvas.height;
+  const canvasWidth = canvas.width;
+  const canvasHeight = canvas.height;
 
-  const context = state.fgCtx;
+  const context = ctx;
   const imageData = context.getImageData(0, 0, canvasWidth, canvasHeight);
   const data = imageData.data;
 

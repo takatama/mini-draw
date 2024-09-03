@@ -40,7 +40,7 @@ export function bucketMode(state) {
         state.container.querySelector("#md-fg-color-picker").value
       );
       saveState(state);
-      bucketFill(state, x, y, fillColor);
+      bucketFill(state.fgCanvas, state.fgCtx, x, y, fillColor);
     },
     handleMove(event) {},
     handleEnd() {},
