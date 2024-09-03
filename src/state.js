@@ -5,6 +5,8 @@ export const createState = ({
   thickness,
   eraserSize,
 }) => {
+  const { bgCanvas, fgCanvas, applyUndo, clearCanvas } = components;
+
   const state = {
     components,
     fgColor,
@@ -15,27 +17,27 @@ export const createState = ({
     mode: null,
   };
 
-  state.save = function () {
+  state.save = () => {
     const stateSnapshot = {
-      background: state.components.bgCanvas.toDataURL(),
-      drawing: state.components.fgCanvas.toDataURL(),
+      background: bgCanvas.toDataURL(),
+      drawing: fgCanvas.toDataURL(),
       fgColor: state.fgColor,
       bgColor: state.bgColor,
     };
     state.undoStack.push(stateSnapshot);
   };
 
-  state.undo = function () {
+  state.undo = () => {
     if (state.undoStack.length > 0) {
       const lastState = state.undoStack.pop();
       state.fgColor = lastState.fgColor;
       state.bgColor = lastState.bgColor;
-      components.applyUndo(state, lastState);
+      applyUndo(state, lastState);
     }
   };
 
-  state.clearCanvas = function () {
-    components.clearCanvas(state.bgColor);
+  state.clearCanvas = () => {
+    clearCanvas(state.bgColor);
     state.undoStack.length = 0;
   };
 
