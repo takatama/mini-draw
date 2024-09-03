@@ -1,3 +1,10 @@
+import {
+  updateColorPicker,
+  updateCanvas,
+  updateBackgroundColor,
+  clearCanvas,
+} from "./ui.js";
+
 export const createState = ({
   container,
   bgCanvas,
@@ -20,6 +27,7 @@ export const createState = ({
     eraserIndicator,
     mode: null,
   };
+
   state.fgCanvas.style.willReadFrequently = true;
 
   state.setMode = function (mode) {
@@ -34,48 +42,22 @@ export const createState = ({
       bgColor: this.bgColor,
     };
     this.undoStack.push(stateSnapshot);
-  };
+  }.bind(state);
 
   state.undo = function () {
     if (this.undoStack.length > 0) {
       const lastState = this.undoStack.pop();
-
-      const lastBackground = new Image();
-      lastBackground.src = lastState.background;
-      lastBackground.onload = () => {
-        this.bgCtx.clearRect(0, 0, this.bgCanvas.width, this.bgCanvas.height);
-        this.bgCtx.drawImage(lastBackground, 0, 0);
-      };
-
-      const lastDrawing = new Image();
-      lastDrawing.src = lastState.drawing;
-      lastDrawing.onload = () => {
-        this.fgCtx.clearRect(0, 0, this.fgCanvas.width, this.fgCanvas.height);
-        this.fgCtx.drawImage(lastDrawing, 0, 0);
-      };
-
+      updateCanvas(this.bgCanvas, this.bgCtx, lastState.background);
+      updateCanvas(this.fgCanvas, this.fgCtx, lastState.drawing);
       this.fgColor = lastState.fgColor;
-      this.container.querySelector("#md-fg-color-picker").value =
-        lastState.fgColor;
-
+      updateColorPicker(this.container, "#md-fg-color-picker", this.fgColor);
       this.bgColor = lastState.bgColor;
-      this.bgCtx.fillStyle = lastState.bgColor;
-      this.bgCtx.fillRect(0, 0, this.bgCanvas.width, this.bgCanvas.height);
-      this.container.querySelector("#md-bg-color-picker").value =
-        lastState.bgColor;
-      this.container
-        .querySelector("#bg-icon")
-        .setAttribute("fill", lastState.bgColor);
+      updateBackgroundColor(this.container, this.bgCtx, this.bgColor);
     }
   }.bind(state);
 
-  state.clearCanvas = function (event) {
-    this.fgCtx.clearRect(0, 0, this.fgCanvas.width, this.fgCanvas.height);
-    this.bgCtx.clearRect(0, 0, this.bgCanvas.width, this.bgCanvas.height);
-    this.bgCtx.fillStyle = this.container.querySelector(
-      "#md-bg-color-picker"
-    ).value;
-    this.bgCtx.fillRect(0, 0, this.bgCanvas.width, this.bgCanvas.height);
+  state.clearCanvas = function () {
+    clearCanvas(state);
     this.undoStack.length = 0;
   }.bind(state);
 
