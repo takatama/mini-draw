@@ -11,8 +11,8 @@
 
 .md-canvas-container {
   position: relative;
-  width: 340px;
-  height: 340px;
+  width: {{canvasWidth}}px;
+  height: {{canvasHeight}}px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -42,7 +42,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 340px;
+  max-width: {{canvasWidth}}px;
   width: 100%;
 }
 
@@ -58,8 +58,8 @@
   position: absolute;
   pointer-events: none;
   display: none;
-  width: 20px;
-  height: 20px;
+  width: {{eraserSize}}px;
+  height: {{eraserSize}}px;
 }
 
 .md-container label {
@@ -67,7 +67,7 @@
 }
 
 .md-container img {
-  max-width: 340px;
+  max-width: {{canvasWidth}}px;
 }
 
 .md-container svg {

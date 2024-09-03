@@ -4,27 +4,71 @@ import { createComponents } from "./components.js";
 import { createState } from "./state.js";
 import { pencilMode, bucketMode, eraserMode, backgroundMode } from "./modes";
 
-const DEFAULT_PENCIL_COLOR = "#000000";
-const DEFAULT_BG_COLOR = "#FFFFEF";
-const DEFAULT_THICKNESS = 1;
-const DEFAULT_ERASER_SIZE = 20;
+export const DEFAULTS = {
+  CANVAS_WIDTH: 340,
+  CANVAS_HEIGHT: 340,
+  PENCIL_COLOR: "#000000",
+  BG_COLOR: "#FFFFEF",
+  THICKNESS: 1,
+  ERASER_SIZE: 20,
+};
 
 const MiniDraw = (function () {
-  function init(containerId) {
+  function init(containerId, options = {}) {
     const container = document.getElementById(containerId);
     if (!container) {
       console.error(`Container with id ${containerId} not found`);
       return;
     }
 
-    injectTemplate(container);
+    const validatedOptions = {
+      canvasWidth: validateValue(
+        options.canvasWidth,
+        DEFAULTS.CANVAS_WIDTH,
+        validatePositiveNumber,
+        "canvasWidth"
+      ),
+      canvasHeight: validateValue(
+        options.canvasHeight,
+        DEFAULTS.CANVAS_HEIGHT,
+        validatePositiveNumber,
+        "canvasHeight"
+      ),
+      pencilColor: validateValue(
+        options.pencilColor,
+        DEFAULTS.PENCIL_COLOR,
+        validateColor,
+        "pencilColor"
+      ),
+      bgColor: validateValue(
+        options.bgColor,
+        DEFAULTS.BG_COLOR,
+        validateColor,
+        "bgColor"
+      ),
+      thickness: validateValue(
+        options.thickness,
+        DEFAULTS.THICKNESS,
+        validatePositiveNumber,
+        "thickness"
+      ),
+      eraserSize: validateValue(
+        options.eraserSize,
+        DEFAULTS.ERASER_SIZE,
+        validatePositiveNumber,
+        "eraserSize"
+      ),
+    };
+
+    injectTemplate({
+      container,
+      ...validatedOptions,
+    });
+
     const components = createComponents(container);
     const state = createState({
       components,
-      fgColor: DEFAULT_PENCIL_COLOR,
-      bgColor: DEFAULT_BG_COLOR,
-      thickness: DEFAULT_THICKNESS,
-      eraserSize: DEFAULT_ERASER_SIZE,
+      ...validatedOptions,
     });
     state.mode = pencilMode(components, state);
 
@@ -32,10 +76,43 @@ const MiniDraw = (function () {
     state.clearCanvas();
   }
 
-  function injectTemplate(container) {
-    container.innerHTML = template;
+  function validateValue(value, defaultValue, validator, name) {
+    if (value === undefined) {
+      return defaultValue;
+    }
+    if (!validator(value)) {
+      console.warn(`Invalid ${name}: ${value}. Using default value.`);
+      return defaultValue;
+    }
+    return value;
+  }
+
+  function validatePositiveNumber(value) {
+    return typeof value === "number" && value > 0;
+  }
+
+  function validateColor(color) {
+    return /^#[0-9A-F]{6}$/i.test(color);
+  }
+
+  function injectTemplate(options) {
+    const { container, ...rest } = options;
+
+    let finalTemplate = template;
+    let finalStyle = style;
+
+    Object.keys(rest).forEach((key) => {
+      finalTemplate = finalTemplate.replace(
+        new RegExp(`{{${key}}}`, "g"),
+        rest[key]
+      );
+      finalStyle = finalStyle.replace(new RegExp(`{{${key}}}`, "g"), rest[key]);
+    });
+
+    container.innerHTML = finalTemplate;
+
     const styleElement = document.createElement("style");
-    styleElement.textContent = style;
+    styleElement.textContent = finalStyle;
     document.head.appendChild(styleElement);
   }
 
@@ -64,8 +141,8 @@ const MiniDraw = (function () {
 
     setupModeSwitching(components, state);
 
-    components.fgColorPicker.addEventListener("input", (event) => {
-      state.fgColor = event.target.value;
+    components.pencilColorPicker.addEventListener("input", (event) => {
+      state.pencilColor = event.target.value;
     });
 
     components.thicknessSlider.addEventListener("input", (event) => {
@@ -98,19 +175,19 @@ const MiniDraw = (function () {
   }
 
   function switchMode(value, components, state) {
-    switch (value) {
-      case "pencil":
-        return pencilMode(components, state);
-      case "eraser":
-        return eraserMode(components, state);
-      case "bucket":
-        return bucketMode(components, state);
-      case "background":
-        return backgroundMode(components, state);
-      default:
-        console.error(`Unknown mode: ${value}`);
-        return state.mode;
+    const modes = {
+      pencil: pencilMode,
+      eraser: eraserMode,
+      bucket: bucketMode,
+      background: backgroundMode,
+    };
+
+    if (!modes[value]) {
+      console.error(`Unknown mode: ${value}`);
+      return state.mode;
     }
+
+    return modes[value](components, state);
   }
 
   return { init };

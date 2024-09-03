@@ -1,6 +1,5 @@
 import { getPosition, startDrawing, drawLine, erase } from "./draw.js";
 import { bucketFill, hexToRgbA } from "./fill.js";
-import { CANVAS_SIZE } from "./components.js";
 
 const baseMode = {
   handleStart(event) {},
@@ -15,7 +14,7 @@ export function pencilMode(components, state) {
     handleStart(event) {
       const { x, y } = getPosition(components.fgCanvas, event);
       components.hideEraserIndicator();
-      startDrawing(components.fgCtx, state.fgColor, state.thickness, x, y);
+      startDrawing(components.fgCtx, state.pencilColor, state.thickness, x, y);
       this.isDrawing = true;
       state.save();
     },
@@ -35,7 +34,7 @@ export function bucketMode(components, state) {
     ...baseMode,
     handleStart(event) {
       const { x, y } = getPosition(components.fgCanvas, event);
-      const fillColor = hexToRgbA(components.getFgColor());
+      const fillColor = hexToRgbA(components.getpencilColor());
       state.save();
       bucketFill(components.fgCanvas, components.fgCtx, x, y, fillColor);
     },
@@ -43,29 +42,15 @@ export function bucketMode(components, state) {
 }
 
 export function eraserMode(components, state) {
-  function updateEraserPosition(components, state, event) {
-    const { x, y } = getPosition(components.fgCanvas, event);
-    const withinCanvasBounds =
-      x - state.eraserSize / 2 > 0 &&
-      x + state.eraserSize / 2 < CANVAS_SIZE &&
-      y - state.eraserSize / 2 > 0 &&
-      y + state.eraserSize / 2 < CANVAS_SIZE;
-
-    components.setEraserIndicatorVisibility(withinCanvasBounds);
-    components.setEraserIndicatorPosition(state.eraserSize, event);
-    return { x, y, withinCanvasBounds };
-  }
-
   return {
     ...baseMode,
     handleStart(event) {
       state.save();
-      components.setEraserIndicatorPosition(state.eraserSize, event);
+      components.updateEraserIndicator(state.eraserSize, event);
     },
     handleMove(event) {
-      const { x, y, withinCanvasBounds } = updateEraserPosition(
-        components,
-        state,
+      const { x, y, withinCanvasBounds } = components.updateEraserIndicator(
+        state.eraserSize,
         event
       );
       if (withinCanvasBounds && (event.buttons === 1 || event.touches)) {

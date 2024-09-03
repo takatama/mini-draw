@@ -1,7 +1,15 @@
 <div class="md-container">
   <div class="md-canvas-container">
-    <canvas id="md-bg-canvas" width="340" height="340"></canvas>
-    <canvas id="md-fg-canvas" width="340" height="340"></canvas>
+    <canvas
+      id="md-bg-canvas"
+      width="{{canvasWidth}}"
+      height="{{canvasHeight}}"
+    ></canvas>
+    <canvas
+      id="md-fg-canvas"
+      width="{{canvasWidth}}"
+      height="{{canvasHeight}}"
+    ></canvas>
     <div id="md-spinner" class="md-spinner"></div>
   </div>
   <div class="md-toolbar">
@@ -102,7 +110,7 @@
           type="color"
           id="md-fg-color-picker"
           class="md-tool md-tool-pencil md-tool-bucket"
-          value="#000000"
+          value="{{pencilColor}}"
         />
         <input
           type="range"
@@ -110,7 +118,7 @@
           class="md-tool md-tool-pencil"
           min="1"
           max="50"
-          value="1"
+          value="{{thickness}}"
         />
         <label class="md-tool md-tool-eraser">Eraser</label>
         <input
@@ -119,14 +127,14 @@
           class="md-tool md-tool-eraser"
           min="1"
           max="50"
-          value="20"
+          value="{{eraserSize}}"
         />
         <label class="md-tool md-tool-background">Background</label>
         <input
           type="color"
           id="md-bg-color-picker"
           class="md-tool md-tool-background"
-          value="#FFFFEF"
+          value="{{bgColor}}"
         />
       </div>
     </div>

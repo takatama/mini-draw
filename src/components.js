@@ -1,5 +1,7 @@
+import { getPosition } from "./draw";
+
 const FG_CANVAS = "#md-fg-canvas";
-const FG_COLOR_PICKER = "#md-fg-color-picker";
+const PENCIL_COLOR_PICKER = "#md-fg-color-picker";
 const THICKNESS_SLIDER = "#md-thickness-slider";
 const ERASER_INDICATOR = "#md-eraser-indicator";
 const ERASER_SIZE_SLIDER = "#md-eraser-size-slider";
@@ -10,8 +12,6 @@ const CLEAR_CANVAS_BUTTON = "#md-clear-canvas";
 const UNDO_BUTTON = "#md-undo";
 const MODE_TOOLS = "#md-mode-tools";
 
-export const CANVAS_SIZE = 340;
-
 export function createComponents(container) {
   const fgCanvas = container.querySelector(FG_CANVAS);
   fgCanvas.style.willReadFrequently = true;
@@ -21,7 +21,7 @@ export function createComponents(container) {
     container,
     fgCanvas,
     fgCtx: fgCanvas.getContext("2d"),
-    fgColorPicker: container.querySelector(FG_COLOR_PICKER),
+    pencilColorPicker: container.querySelector(PENCIL_COLOR_PICKER),
     thicknessSlider: container.querySelector(THICKNESS_SLIDER),
     bgCanvas,
     bgCtx: bgCanvas.getContext("2d"),
@@ -59,7 +59,10 @@ export function createComponents(container) {
       if (lastState) {
         components.updateBgCanvas(lastState.background);
         components.updateFgCanvas(lastState.drawing);
-        components.updateColorPicker(components.fgColorPicker, state.fgColor);
+        components.updateColorPicker(
+          components.pencilColorPicker,
+          state.pencilColor
+        );
         components.updateBackgroundColor(state.bgColor);
       }
     },
@@ -84,6 +87,21 @@ export function createComponents(container) {
       components.eraserIndicator.style.display = "none";
     },
 
+    updateEraserIndicator: (eraserSize, event) => {
+      const canvas = components.fgCanvas;
+      const { x, y } = getPosition(components.fgCanvas, event);
+      const withinCanvasBounds =
+        x - eraserSize / 2 > 0 &&
+        x + eraserSize / 2 < canvas.width &&
+        y - eraserSize / 2 > 0 &&
+        y + eraserSize / 2 < canvas.height;
+      components.eraserIndicator.style.display = withinCanvasBounds
+        ? "block"
+        : "none";
+      components.setEraserIndicatorPosition(eraserSize, event);
+      return { x, y, withinCanvasBounds };
+    },
+
     setEraserIndicatorPosition: (eraserSize, event) => {
       const x =
         (event.clientX || event.touches[0].clientX) -
@@ -97,12 +115,8 @@ export function createComponents(container) {
       components.eraserIndicator.style.top = `${y}px`;
     },
 
-    setEraserIndicatorVisibility: (isVisible) => {
-      components.eraserIndicator.style.display = isVisible ? "block" : "none";
-    },
-
-    getFgColor: () => {
-      return components.fgColorPicker.value;
+    getpencilColor: () => {
+      return components.pencilColorPicker.value;
     },
 
     updateFgCanvas: (imageDataUrl) => {
