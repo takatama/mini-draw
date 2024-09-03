@@ -19,62 +19,66 @@ const MiniDraw = (function () {
       return;
     }
 
-    const {
-      canvasWidth = DEFAULT_CANVAS_WIDTH,
-      canvasHeight = DEFAULT_CANVAS_HEIGHT,
-      pencilColor = DEFAULT_PENCIL_COLOR,
-      bgColor = DEFAULT_BG_COLOR,
-      thickness = DEFAULT_THICKNESS,
-      eraserSize = DEFAULT_ERASER_SIZE,
-    } = options;
-
-    const validatedCanvasWidth = validatePositiveNumber(
-      canvasWidth,
-      "canvasWidth"
-    )
-      ? canvasWidth
-      : DEFAULT_CANVAS_WIDTH;
-    const validatedCanvasHeight = validatePositiveNumber(
-      canvasHeight,
-      "canvasHeight"
-    )
-      ? canvasHeight
-      : DEFAULT_CANVAS_HEIGHT;
-    const validatedThickness = validatePositiveNumber(thickness, "thickness")
-      ? thickness
-      : DEFAULT_THICKNESS;
-    const validatedEraserSize = validatePositiveNumber(eraserSize, "eraserSize")
-      ? eraserSize
-      : DEFAULT_ERASER_SIZE;
-    const validatedPencilColor = validateColor(pencilColor, "pencilColor")
-      ? pencilColor
-      : DEFAULT_PENCIL_COLOR;
-    const validatedBgColor = validateColor(bgColor, "bgColor")
-      ? bgColor
-      : DEFAULT_BG_COLOR;
+    const validatedOptions = {
+      canvasWidth: validateOrDefault(
+        options.canvasWidth,
+        DEFAULT_CANVAS_WIDTH,
+        validatePositiveNumber,
+        "canvasWidth"
+      ),
+      canvasHeight: validateOrDefault(
+        options.canvasHeight,
+        DEFAULT_CANVAS_HEIGHT,
+        validatePositiveNumber,
+        "canvasHeight"
+      ),
+      pencilColor: validateOrDefault(
+        options.pencilColor,
+        DEFAULT_PENCIL_COLOR,
+        validateColor,
+        "pencilColor"
+      ),
+      bgColor: validateOrDefault(
+        options.bgColor,
+        DEFAULT_BG_COLOR,
+        validateColor,
+        "bgColor"
+      ),
+      thickness: validateOrDefault(
+        options.thickness,
+        DEFAULT_THICKNESS,
+        validatePositiveNumber,
+        "thickness"
+      ),
+      eraserSize: validateOrDefault(
+        options.eraserSize,
+        DEFAULT_ERASER_SIZE,
+        validatePositiveNumber,
+        "eraserSize"
+      ),
+    };
 
     injectTemplate({
       container,
-      canvasWidth: validatedCanvasWidth,
-      canvasHeight: validatedCanvasHeight,
-      pencilColor: validatedPencilColor,
-      bgColor: validatedBgColor,
-      thickness: validatedThickness,
-      eraserSize: validatedEraserSize,
+      ...validatedOptions,
     });
 
     const components = createComponents(container);
     const state = createState({
       components,
-      pencilColor: validatedPencilColor,
-      bgColor: validatedBgColor,
-      thickness: validatedThickness,
-      eraserSize: validatedEraserSize,
+      ...validatedOptions,
     });
     state.mode = pencilMode(components, state);
 
     setupInteractions(components, state);
     state.clearCanvas();
+  }
+
+  function validateOrDefault(value, defaultValue, validator, name) {
+    if (value === undefined) {
+      return defaultValue;
+    }
+    return validator(value, name) ? value : defaultValue;
   }
 
   function validatePositiveNumber(value, name) {
