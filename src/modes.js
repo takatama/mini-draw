@@ -1,4 +1,4 @@
-import { getPosition, startDrawing, drawLine, erase } from "./draw.js";
+import { getPosition, erase } from "./draw.js";
 import { bucketFill, hexToRgbA } from "./fill.js";
 
 const baseMode = {
@@ -12,16 +12,13 @@ export function pencilMode(components, state) {
     ...baseMode,
     isDrawing: false,
     handleStart(event) {
-      const { x, y } = getPosition(components.fgCanvas, event);
-      components.hideEraserIndicator();
-      startDrawing(components.fgCtx, state.pencilColor, state.thickness, x, y);
+      components.startDrawing(state.pencilColor, state.thickness, event);
       this.isDrawing = true;
       state.save();
     },
     handleMove(event) {
       if (!this.isDrawing) return;
-      const { x, y } = getPosition(components.fgCanvas, event);
-      drawLine(components.fgCtx, x, y);
+      components.drawLine(event);
     },
     handleEnd() {
       this.isDrawing = false;

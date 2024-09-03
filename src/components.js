@@ -1,4 +1,4 @@
-import { getPosition } from "./draw";
+import { getPosition, startDrawing, drawLine } from "./draw";
 
 const FG_CANVAS = "#md-fg-canvas";
 const PENCIL_COLOR_PICKER = "#md-fg-color-picker";
@@ -69,6 +69,16 @@ export function createComponents(container) {
 
     setModeTools: (mode) => {
       components.modeTools.className = `mode-${mode}`;
+    },
+
+    startDrawing: (pencilColor, thickness, event) => {
+      const { x, y } = getPosition(components.fgCanvas, event);
+      startDrawing(components.fgCtx, pencilColor, thickness, x, y);
+    },
+
+    drawLine: (event) => {
+      const { x, y } = getPosition(components.fgCanvas, event);
+      drawLine(components.fgCtx, x, y);
     },
 
     setEraserIndicatorSize: (eraserSize) => {
