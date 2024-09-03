@@ -16,12 +16,8 @@ const MiniDraw = (function () {
       console.error(`Container with id ${containerId} not found`);
       return;
     }
-    container.innerHTML = template;
 
-    const styleElement = document.createElement("style");
-    styleElement.textContent = style;
-    document.head.appendChild(styleElement);
-
+    injectTemplate(container);
     const components = createComponents(container);
     const state = createState({
       components,
@@ -34,6 +30,13 @@ const MiniDraw = (function () {
 
     setupInteractions(components, state);
     state.clearCanvas();
+  }
+
+  function injectTemplate(container) {
+    container.innerHTML = template;
+    const styleElement = document.createElement("style");
+    styleElement.textContent = style;
+    document.head.appendChild(styleElement);
   }
 
   return { init };
@@ -60,26 +63,7 @@ export function setupInteractions(components, state) {
     (event) => state.mode.handleEnd(event)
   );
 
-  components.container.querySelectorAll("[name=mode]").forEach((radio) => {
-    radio.addEventListener("change", (event) => {
-      components.hideEraserIndicator();
-      components.setModeTools(event.target.value);
-      switch (event.target.value) {
-        case "pencil":
-          state.mode = pencilMode(components, state);
-          break;
-        case "eraser":
-          state.mode = eraserMode(components, state);
-          break;
-        case "bucket":
-          state.mode = bucketMode(components, state);
-          break;
-        case "background":
-          state.mode = backgroundMode(components, state);
-          break;
-      }
-    });
-  });
+  setupModeSwitching(components, state);
 
   components.fgColorPicker.addEventListener("input", (event) => {
     state.fgColor = event.target.value;
@@ -102,6 +86,32 @@ export function setupInteractions(components, state) {
 
   components.clearCanvasButton.addEventListener("click", state.clearCanvas);
   components.undoButton.addEventListener("click", state.undo);
+}
+
+function setupModeSwitching(components, state) {
+  components.container.querySelectorAll("[name=mode]").forEach((radio) => {
+    radio.addEventListener("change", (event) => {
+      components.hideEraserIndicator();
+      components.setModeTools(event.target.value);
+      state.mode = switchMode(event.target.value, components, state);
+    });
+  });
+}
+
+function switchMode(value, components, state) {
+  switch (value) {
+    case "pencil":
+      return pencilMode(components, state);
+    case "eraser":
+      return eraserMode(components, state);
+    case "bucket":
+      return bucketMode(components, state);
+    case "background":
+      return backgroundMode(components, state);
+    default:
+      console.error(`Unknown mode: ${value}`);
+      return state.mode;
+  }
 }
 
 export default MiniDraw;
