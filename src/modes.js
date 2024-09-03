@@ -41,7 +41,7 @@ export function eraserMode(components, state) {
   return {
     handleStart(event) {
       state.save();
-      components.updateEraserIndicatorPosition(state.eraserSize, event);
+      components.setEraserIndicatorPosition(state.eraserSize, event);
     },
     handleMove(event) {
       const { x, y } = getPosition(components.fgCanvas, event);
@@ -50,8 +50,8 @@ export function eraserMode(components, state) {
         x + state.eraserSize / 2 < CANVAS_SIZE &&
         y - state.eraserSize / 2 > 0 &&
         y + state.eraserSize / 2 < CANVAS_SIZE;
-      components.updateEraserIndicatorVisibility(withinCanvasBounds);
-      components.updateEraserIndicatorPosition(state.eraserSize, event);
+      components.setEraserIndicatorVisibility(withinCanvasBounds);
+      components.setEraserIndicatorPosition(state.eraserSize, event);
       if (event.buttons === 1 || event.touches) {
         erase(components.fgCtx, state.eraserSize, x, y);
       }

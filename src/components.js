@@ -30,102 +30,102 @@ export function createComponents(container) {
     clearCanvasButton: container.querySelector(CLEAR_CANVAS_BUTTON),
     undoButton: container.querySelector(UNDO_BUTTON),
     modeTools: container.querySelector(MODE_TOOLS),
-  };
 
-  components.clearCanvas = function (bgColor) {
-    components.fgCtx.clearRect(
-      0,
-      0,
-      components.fgCanvas.width,
-      components.fgCanvas.height
-    );
-    components.bgCtx.clearRect(
-      0,
-      0,
-      components.bgCanvas.width,
-      components.bgCanvas.height
-    );
-    components.bgCtx.fillStyle = bgColor;
-    components.bgCtx.fillRect(
-      0,
-      0,
-      components.bgCanvas.width,
-      components.bgCanvas.height
-    );
-  };
-
-  components.applyUndo = function (state, lastState) {
-    if (lastState) {
-      components.updateCanvas(
-        components.bgCanvas,
-        components.bgCtx,
-        lastState.background
+    clearCanvas: (bgColor) => {
+      components.fgCtx.clearRect(
+        0,
+        0,
+        components.fgCanvas.width,
+        components.fgCanvas.height
       );
-      components.updateCanvas(
-        components.fgCanvas,
-        components.fgCtx,
-        lastState.drawing
+      components.bgCtx.clearRect(
+        0,
+        0,
+        components.bgCanvas.width,
+        components.bgCanvas.height
       );
-      components.updateColorPicker(components.fgColorPicker, state.fgColor);
-      components.updateBackgroundColor(
-        components.bgCtx,
-        components.bgIcon,
-        state.bgColor
+      components.bgCtx.fillStyle = bgColor;
+      components.bgCtx.fillRect(
+        0,
+        0,
+        components.bgCanvas.width,
+        components.bgCanvas.height
       );
-    }
-  };
+    },
 
-  components.updateModeTools = function (mode) {
-    components.modeTools.className = `mode-${mode}`;
-  };
+    applyUndo: (state, lastState) => {
+      if (lastState) {
+        components.updateCanvas(
+          components.bgCanvas,
+          components.bgCtx,
+          lastState.background
+        );
+        components.updateCanvas(
+          components.fgCanvas,
+          components.fgCtx,
+          lastState.drawing
+        );
+        components.updateColorPicker(components.fgColorPicker, state.fgColor);
+        components.updateBackgroundColor(
+          components.bgCtx,
+          components.bgIcon,
+          state.bgColor
+        );
+      }
+    },
 
-  components.updateEraserIndicatorSize = function (eraserSize) {
-    components.eraserIndicator.style.width = `${eraserSize}px`;
-    components.eraserIndicator.style.height = `${eraserSize}px`;
-  };
+    setModeTools: (mode) => {
+      components.modeTools.className = `mode-${mode}`;
+    },
 
-  components.updateBackgroundColor = function (ctx, bgIcon, color) {
-    ctx.fillStyle = color;
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    bgIcon.setAttribute("fill", color);
-  };
+    setEraserIndicatorSize: (eraserSize) => {
+      components.eraserIndicator.style.width = `${eraserSize}px`;
+      components.eraserIndicator.style.height = `${eraserSize}px`;
+    },
 
-  components.hideElement = function (element) {
-    element.style.display = "none";
-  };
+    updateBackgroundColor: (ctx, bgIcon, color) => {
+      ctx.fillStyle = color;
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      bgIcon.setAttribute("fill", color);
+    },
 
-  components.updateEraserIndicatorPosition = function (eraserSize, event) {
-    const x =
-      (event.clientX || event.touches[0].clientX) -
-      eraserSize / 2 +
-      window.scrollX;
-    const y =
-      (event.clientY || event.touches[0].clientY) -
-      eraserSize / 2 +
-      window.scrollY;
-    components.eraserIndicator.style.left = `${x}px`;
-    components.eraserIndicator.style.top = `${y}px`;
-  };
+    hideElement: (element) => {
+      element.style.display = "none";
+    },
 
-  components.updateEraserIndicatorVisibility = function (isVisible) {
-    components.eraserIndicator.style.display = isVisible ? "block" : "none";
-  };
+    setEraserIndicatorPosition: (eraserSize, event) => {
+      const x =
+        (event.clientX || event.touches[0].clientX) -
+        eraserSize / 2 +
+        window.scrollX;
+      const y =
+        (event.clientY || event.touches[0].clientY) -
+        eraserSize / 2 +
+        window.scrollY;
+      components.eraserIndicator.style.left = `${x}px`;
+      components.eraserIndicator.style.top = `${y}px`;
+    },
 
-  components.getFgColor = function () {
-    return components.fgColorPicker.value;
-  };
+    setEraserIndicatorVisibility: (isVisible) => {
+      components.eraserIndicator.style.display = isVisible ? "block" : "none";
+    },
 
-  components.updateCanvas = function (canvas, ctx, imageDataUrl) {
-    const image = new Image();
-    image.src = imageDataUrl;
-    image.onload = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(image, 0, 0);
-    };
-  };
+    getFgColor: () => {
+      return components.fgColorPicker.value;
+    },
 
-  components.updateColorPicker = function (picker, color) {
-    if (picker) picker.value = color;
+    updateCanvas: (canvas, ctx, imageDataUrl) => {
+      const image = new Image();
+      image.src = imageDataUrl;
+      image.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0);
+      };
+    },
+
+    updateColorPicker: (picker, color) => {
+      if (picker) picker.value = color;
+    },
   };
 
   return components;

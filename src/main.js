@@ -63,7 +63,7 @@ export function setupInteractions(components, state) {
   components.container.querySelectorAll("[name=mode]").forEach((radio) => {
     radio.addEventListener("change", (event) => {
       components.hideElement(components.eraserIndicator);
-      components.updateModeTools(event.target.value);
+      components.setModeTools(event.target.value);
       switch (event.target.value) {
         case "pencil":
           state.mode = pencilMode(components, state);
