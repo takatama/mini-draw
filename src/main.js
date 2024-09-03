@@ -47,7 +47,7 @@ const MiniDraw = (function () {
       bgCtx: bgCanvas.getContext("2d"),
       eraserIndicator: container.querySelector("#md-eraser-indicator"),
     });
-    state.mode = pencilMode(state);
+    state.setMode(pencilMode);
 
     setupEventListeners(state);
     state.clearCanvas();

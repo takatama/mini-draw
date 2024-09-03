@@ -23,7 +23,7 @@ export const createState = ({
   state.fgCanvas.style.willReadFrequently = true;
 
   state.setMode = function (mode) {
-    this.mode = mode;
+    this.mode = mode(this);
   };
 
   state.save = function () {
