@@ -42,30 +42,15 @@ export function bucketMode(components, state) {
 }
 
 export function eraserMode(components, state) {
-  function updateEraserPosition(components, state, event) {
-    const canvas = components.fgCanvas;
-    const { x, y } = getPosition(canvas, event);
-    const withinCanvasBounds =
-      x - state.eraserSize / 2 > 0 &&
-      x + state.eraserSize / 2 < canvas.width &&
-      y - state.eraserSize / 2 > 0 &&
-      y + state.eraserSize / 2 < canvas.height;
-
-    components.setEraserIndicatorVisibility(withinCanvasBounds);
-    components.setEraserIndicatorPosition(state.eraserSize, event);
-    return { x, y, withinCanvasBounds };
-  }
-
   return {
     ...baseMode,
     handleStart(event) {
       state.save();
-      components.setEraserIndicatorPosition(state.eraserSize, event);
+      components.updateEraserIndicator(state.eraserSize, event);
     },
     handleMove(event) {
-      const { x, y, withinCanvasBounds } = updateEraserPosition(
-        components,
-        state,
+      const { x, y, withinCanvasBounds } = components.updateEraserIndicator(
+        state.eraserSize,
         event
       );
       if (withinCanvasBounds && (event.buttons === 1 || event.touches)) {

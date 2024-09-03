@@ -1,3 +1,5 @@
+import { getPosition } from "./draw";
+
 const FG_CANVAS = "#md-fg-canvas";
 const FG_COLOR_PICKER = "#md-fg-color-picker";
 const THICKNESS_SLIDER = "#md-thickness-slider";
@@ -82,6 +84,21 @@ export function createComponents(container) {
       components.eraserIndicator.style.display = "none";
     },
 
+    updateEraserIndicator: (eraserSize, event) => {
+      const canvas = components.fgCanvas;
+      const { x, y } = getPosition(components.fgCanvas, event);
+      const withinCanvasBounds =
+        x - eraserSize / 2 > 0 &&
+        x + eraserSize / 2 < canvas.width &&
+        y - eraserSize / 2 > 0 &&
+        y + eraserSize / 2 < canvas.height;
+      components.eraserIndicator.style.display = withinCanvasBounds
+        ? "block"
+        : "none";
+      components.setEraserIndicatorPosition(eraserSize, event);
+      return { x, y, withinCanvasBounds };
+    },
+
     setEraserIndicatorPosition: (eraserSize, event) => {
       const x =
         (event.clientX || event.touches[0].clientX) -
@@ -93,10 +110,6 @@ export function createComponents(container) {
         window.scrollY;
       components.eraserIndicator.style.left = `${x}px`;
       components.eraserIndicator.style.top = `${y}px`;
-    },
-
-    setEraserIndicatorVisibility: (isVisible) => {
-      components.eraserIndicator.style.display = isVisible ? "block" : "none";
     },
 
     getFgColor: () => {
