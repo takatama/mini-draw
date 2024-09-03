@@ -24,3 +24,12 @@ export function clearCanvas({ fgCanvas, fgCtx, bgCanvas, bgCtx, bgColor }) {
   bgCtx.fillStyle = bgColor;
   bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
 }
+
+export function updateModeTools(container, mode) {
+  container.querySelector("#md-mode-tools").className = `mode-${mode}`;
+}
+
+export function updateEraserIndicatorSize(eraserIndicator, eraserSize) {
+  eraserIndicator.style.width = `${eraserSize}px`;
+  eraserIndicator.style.height = `${eraserSize}px`;
+}

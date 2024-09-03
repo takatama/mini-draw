@@ -10,6 +10,11 @@ import {
   backgroundMode,
 } from "./modes.js";
 import { createState } from "./state.js";
+import {
+  updateModeTools,
+  updateEraserIndicatorSize,
+  updateBackgroundColor,
+} from "./ui.js";
 
 const DEFAULT_PENCIL_COLOR = "#000000";
 const DEFAULT_BG_COLOR = "#FFFFEF";
@@ -80,9 +85,7 @@ function setupEventListeners(state) {
   state.container.querySelectorAll("[name=mode]").forEach((radio) => {
     radio.addEventListener("change", (event) => {
       state.eraserIndicator.style.display = "none";
-      state.container.querySelector(
-        "#md-mode-tools"
-      ).className = `mode-${event.target.value}`;
+      updateModeTools(state.container, event.target.value);
       switch (event.target.value) {
         case "pencil":
           state.mode = pencilMode(state);
@@ -116,8 +119,7 @@ function setupEventListeners(state) {
     .querySelector("#md-eraser-size-slider")
     .addEventListener("input", (event) => {
       state.eraserSize = event.target.value;
-      state.eraserIndicator.style.width = state.eraserSize + "px";
-      state.eraserIndicator.style.height = state.eraserSize + "px";
+      updateEraserIndicatorSize(state.eraserIndicator, state.eraserSize);
     });
 
   state.container
@@ -125,11 +127,7 @@ function setupEventListeners(state) {
     .addEventListener("input", (event) => {
       state.save();
       state.bgColor = event.target.value;
-      state.bgCtx.fillStyle = event.target.value;
-      state.bgCtx.fillRect(0, 0, state.bgCanvas.width, state.bgCanvas.height);
-      state.container
-        .querySelector("#bg-icon")
-        .setAttribute("fill", event.target.value);
+      updateBackgroundColor(state.container, state.bgCtx, state.bgColor);
     });
 
   state.container
