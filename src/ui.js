@@ -1,31 +1,17 @@
-export function updateColorPicker(picker, color) {
-  if (picker) picker.value = color;
-}
-
-export function getColor(picker) {
-  return picker.value;
-}
-
-export function updateCanvas(canvas, ctx, imageDataUrl) {
-  const image = new Image();
-  image.src = imageDataUrl;
-  image.onload = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(image, 0, 0);
-  };
-}
-
-export function updateBackgroundColor(ctx, bgIcon, color) {
-  ctx.fillStyle = color;
-  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  bgIcon.setAttribute("fill", color);
-}
-
 export function clearCanvas({ fgCanvas, fgCtx, bgCanvas, bgCtx, bgColor }) {
   fgCtx.clearRect(0, 0, fgCanvas.width, fgCanvas.height);
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
   bgCtx.fillStyle = bgColor;
   bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+}
+
+export function applyUndo(state, lastState) {
+  if (lastState) {
+    updateCanvas(state.bgCanvas, state.bgCtx, lastState.background);
+    updateCanvas(state.fgCanvas, state.fgCtx, lastState.drawing);
+    updateColorPicker(state.fgColorPicker, state.fgColor);
+    updateBackgroundColor(state.bgCtx, state.bgIcon, state.bgColor);
+  }
 }
 
 export function updateModeTools(modeTools, mode) {
@@ -37,13 +23,10 @@ export function updateEraserIndicatorSize(eraserIndicator, eraserSize) {
   eraserIndicator.style.height = `${eraserSize}px`;
 }
 
-export function applyUndo(state, lastState) {
-  if (lastState) {
-    updateCanvas(state.bgCanvas, state.bgCtx, lastState.background);
-    updateCanvas(state.fgCanvas, state.fgCtx, lastState.drawing);
-    updateColorPicker(state.fgColorPicker, state.fgColor);
-    updateBackgroundColor(state.bgCtx, state.bgIcon, state.bgColor);
-  }
+export function updateBackgroundColor(ctx, bgIcon, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  bgIcon.setAttribute("fill", color);
 }
 
 export function hideElement(element) {
@@ -69,4 +52,21 @@ export function updateEraserIndicatorPosition(
 
 export function updateEraserIndicatorVisibility(eraserIndicator, isVisible) {
   eraserIndicator.style.display = isVisible ? "block" : "none";
+}
+
+export function getColor(picker) {
+  return picker.value;
+}
+
+function updateCanvas(canvas, ctx, imageDataUrl) {
+  const image = new Image();
+  image.src = imageDataUrl;
+  image.onload = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(image, 0, 0);
+  };
+}
+
+function updateColorPicker(picker, color) {
+  if (picker) picker.value = color;
 }
