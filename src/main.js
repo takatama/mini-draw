@@ -8,16 +8,22 @@ const DEFAULT_PENCIL_COLOR = "#000000";
 const DEFAULT_BG_COLOR = "#FFFFEF";
 const DEFAULT_THICKNESS = 1;
 const DEFAULT_ERASER_SIZE = 20;
+const DEFAULT_CANVAS_WIDTH = 340;
+const DEFAULT_CANVAS_HEIGHT = 340;
 
 const MiniDraw = (function () {
-  function init(containerId) {
+  function init(containerId, options = {}) {
     const container = document.getElementById(containerId);
     if (!container) {
       console.error(`Container with id ${containerId} not found`);
       return;
     }
+    const {
+      canvasWidth = DEFAULT_CANVAS_WIDTH,
+      canvasHeight = DEFAULT_CANVAS_HEIGHT,
+    } = options;
 
-    injectTemplate(container);
+    injectTemplate(container, canvasWidth, canvasHeight);
     const components = createComponents(container);
     const state = createState({
       components,
@@ -32,10 +38,17 @@ const MiniDraw = (function () {
     state.clearCanvas();
   }
 
-  function injectTemplate(container) {
-    container.innerHTML = template;
+  function injectTemplate(container, canvasWidth, canvasHeight) {
+    const finalTemplate = template
+      .replace(/{{canvasWidth}}/g, canvasWidth)
+      .replace(/{{canvasHeight}}/g, canvasHeight);
+    container.innerHTML = finalTemplate;
+
+    const finalStyle = style
+      .replace(/{{canvasWidth}}/g, canvasWidth)
+      .replace(/{{canvasHeight}}/g, canvasHeight);
     const styleElement = document.createElement("style");
-    styleElement.textContent = style;
+    styleElement.textContent = finalStyle;
     document.head.appendChild(styleElement);
   }
 
