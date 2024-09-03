@@ -5,7 +5,6 @@ import {
   setIndicatorPosition,
   erase,
 } from "./draw.js";
-import { saveState } from "./state.js";
 
 import { bucketFill, hexToRgbA } from "./fill.js";
 
@@ -37,7 +36,7 @@ export function pencilMode(state) {
       state.eraserIndicator.style.display = "none";
       startDrawing(state.fgCtx, state.fgColor, state.thickness, x, y);
       this.isDrawing = true;
-      saveState(state);
+      state.save();
     },
     handleMove(event) {
       if (!this.isDrawing) return;
@@ -57,7 +56,7 @@ export function bucketMode(state) {
       const fillColor = hexToRgbA(
         state.container.querySelector("#md-fg-color-picker").value
       );
-      saveState(state);
+      state.save();
       bucketFill(state.fgCanvas, state.fgCtx, x, y, fillColor);
     },
     handleMove(event) {},
@@ -68,7 +67,7 @@ export function bucketMode(state) {
 export function eraserMode(state) {
   return {
     handleStart(event) {
-      saveState(state);
+      state.save();
       setIndicatorPosition(state.eraserIndicator, state.eraserSize, event);
     },
     handleMove(event) {

@@ -9,7 +9,7 @@ import {
   eraserMode,
   backgroundMode,
 } from "./modes.js";
-import { saveState, undo } from "./state.js";
+import { createState } from "./state.js";
 
 const DEFAULT_PENCIL_COLOR = "#000000";
 const DEFAULT_BG_COLOR = "#FFFFEF";
@@ -33,30 +33,24 @@ const MiniDraw = (function () {
   }
 
   function initialize(container) {
-    const bgCanvas = container.querySelector("#md-bg-canvas");
-    const bgCtx = bgCanvas.getContext("2d");
     const fgCanvas = container.querySelector("#md-fg-canvas");
-    fgCanvas.style.willReadFrequently = true;
-    const fgCtx = fgCanvas.getContext("2d");
-    const eraserIndicator = container.querySelector("#md-eraser-indicator");
-
-    const state = {
+    const bgCanvas = container.querySelector("#md-bg-canvas");
+    const state = createState({
+      container,
       fgColor: DEFAULT_PENCIL_COLOR,
       bgColor: DEFAULT_BG_COLOR,
       thickness: DEFAULT_THICKNESS,
       eraserSize: DEFAULT_ERASER_SIZE,
-      undoStack: [],
-      container,
-      bgCanvas,
-      bgCtx,
       fgCanvas,
-      fgCtx,
-      eraserIndicator,
-    };
+      fgCtx: fgCanvas.getContext("2d"),
+      bgCanvas,
+      bgCtx: bgCanvas.getContext("2d"),
+      eraserIndicator: container.querySelector("#md-eraser-indicator"),
+    });
     state.mode = pencilMode(state);
 
     setupEventListeners(state);
-    clearCanvas(state)();
+    state.clearCanvas();
   }
 
   return { init };
@@ -129,7 +123,7 @@ function setupEventListeners(state) {
   state.container
     .querySelector("#md-bg-color-picker")
     .addEventListener("input", (event) => {
-      saveState(state);
+      state.save();
       state.bgColor = event.target.value;
       state.bgCtx.fillStyle = event.target.value;
       state.bgCtx.fillRect(0, 0, state.bgCanvas.width, state.bgCanvas.height);
@@ -140,22 +134,10 @@ function setupEventListeners(state) {
 
   state.container
     .querySelector("#md-clear-canvas")
-    .addEventListener("click", clearCanvas(state));
+    .addEventListener("click", state.clearCanvas);
   state.container
     .querySelector("#md-undo")
-    .addEventListener("click", undo(state));
-}
-
-function clearCanvas(state) {
-  return function (event) {
-    state.fgCtx.clearRect(0, 0, state.fgCanvas.width, state.fgCanvas.height);
-    state.bgCtx.clearRect(0, 0, state.bgCanvas.width, state.bgCanvas.height);
-    state.bgCtx.fillStyle = state.container.querySelector(
-      "#md-bg-color-picker"
-    ).value;
-    state.bgCtx.fillRect(0, 0, state.bgCanvas.width, state.bgCanvas.height);
-    state.undoStack.length = 0;
-  };
+    .addEventListener("click", state.undo);
 }
 
 export default MiniDraw;
