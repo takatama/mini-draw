@@ -1,5 +1,3 @@
-import { erase } from "./draw.js";
-
 const baseMode = {
   handleStart(event) {},
   handleMove(event) {},
@@ -43,12 +41,12 @@ export function eraserMode(components, state) {
       components.updateEraserIndicator(state.eraserSize, event);
     },
     handleMove(event) {
-      const { x, y, withinCanvasBounds } = components.updateEraserIndicator(
+      const { withinCanvasBounds } = components.updateEraserIndicator(
         state.eraserSize,
         event
       );
       if (withinCanvasBounds && (event.buttons === 1 || event.touches)) {
-        erase(components.fgCtx, state.eraserSize, x, y);
+        components.erase(state.eraserSize, event);
       }
     },
   };
