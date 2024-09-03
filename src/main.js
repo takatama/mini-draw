@@ -1,6 +1,14 @@
 import template from "./template.html?raw";
 import style from "./style.css?raw";
-import { pencilMode, bucketMode, eraserMode, backgroundMode } from "./modes.js";
+import {
+  handleStart,
+  handleMove,
+  handleEnd,
+  pencilMode,
+  bucketMode,
+  eraserMode,
+  backgroundMode,
+} from "./modes.js";
 import { saveState, undo } from "./state.js";
 
 const DEFAULT_PENCIL_COLOR = "#000000";
@@ -136,24 +144,6 @@ function setupEventListeners(state) {
   state.container
     .querySelector("#md-undo")
     .addEventListener("click", undo(state));
-}
-
-function handleStart(state) {
-  return function (event) {
-    state.mode.handleStart(event);
-  };
-}
-
-function handleMove(state) {
-  return function (event) {
-    state.mode.handleMove(event);
-  };
-}
-
-function handleEnd(state) {
-  return function (event) {
-    state.mode.handleEnd(event);
-  };
 }
 
 function clearCanvas(state) {
