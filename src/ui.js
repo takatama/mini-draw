@@ -1,8 +1,9 @@
-import { BG_ICON, FG_COLOR_PICKER, MODE_TOOLS } from "./selectors";
-
-export function updateColorPicker(container, selector, color) {
-  const picker = container.querySelector(selector);
+export function updateColorPicker(picker, color) {
   if (picker) picker.value = color;
+}
+
+export function getColor(picker) {
+  return picker.value;
 }
 
 export function updateCanvas(canvas, ctx, imageDataUrl) {
@@ -14,10 +15,10 @@ export function updateCanvas(canvas, ctx, imageDataUrl) {
   };
 }
 
-export function updateBackgroundColor(container, ctx, color) {
+export function updateBackgroundColor(ctx, bgIcon, color) {
   ctx.fillStyle = color;
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  container.querySelector(BG_ICON).setAttribute("fill", color);
+  bgIcon.setAttribute("fill", color);
 }
 
 export function clearCanvas({ fgCanvas, fgCtx, bgCanvas, bgCtx, bgColor }) {
@@ -27,8 +28,8 @@ export function clearCanvas({ fgCanvas, fgCtx, bgCanvas, bgCtx, bgColor }) {
   bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
 }
 
-export function updateModeTools(container, mode) {
-  container.querySelector(MODE_TOOLS).className = `mode-${mode}`;
+export function updateModeTools(modeTools, mode) {
+  modeTools.className = `mode-${mode}`;
 }
 
 export function updateEraserIndicatorSize(eraserIndicator, eraserSize) {
@@ -40,8 +41,8 @@ export function applyUndo(state, lastState) {
   if (lastState) {
     updateCanvas(state.bgCanvas, state.bgCtx, lastState.background);
     updateCanvas(state.fgCanvas, state.fgCtx, lastState.drawing);
-    updateColorPicker(state.container, FG_COLOR_PICKER, state.fgColor);
-    updateBackgroundColor(state.container, state.bgCtx, state.bgColor);
+    updateColorPicker(state.fgColorPicker, state.fgColor);
+    updateBackgroundColor(state.bgCtx, state.bgIcon, state.bgColor);
   }
 }
 
@@ -68,8 +69,4 @@ export function updateEraserIndicatorPosition(
 
 export function updateEraserIndicatorVisibility(eraserIndicator, isVisible) {
   eraserIndicator.style.display = isVisible ? "block" : "none";
-}
-
-export function getForegroundColor(container) {
-  return container.querySelector(FG_COLOR_PICKER).value;
 }

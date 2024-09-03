@@ -5,7 +5,7 @@ import {
   hideElement,
   updateEraserIndicatorPosition,
   updateEraserIndicatorVisibility,
-  getForegroundColor,
+  getColor,
 } from "./ui.js";
 
 const CANVAS_SIZE = 340;
@@ -35,7 +35,7 @@ export function bucketMode(state) {
   return {
     handleStart(event) {
       const { x, y } = getPosition(state.fgCanvas, event);
-      const fillColor = hexToRgbA(getForegroundColor(state.container));
+      const fillColor = hexToRgbA(getColor(state.fgColorPicker));
       state.save();
       bucketFill(state.fgCanvas, state.fgCtx, x, y, fillColor);
     },

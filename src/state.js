@@ -11,6 +11,9 @@ export const createState = ({
   bgCanvas,
   bgCtx,
   eraserIndicator,
+  bgIcon,
+  modeTools,
+  fgColorPicker,
 }) => {
   const state = {
     container,
@@ -23,6 +26,9 @@ export const createState = ({
     bgCanvas,
     bgCtx,
     eraserIndicator,
+    bgIcon,
+    modeTools,
+    fgColorPicker,
     undoStack: [],
     mode: null,
   };
