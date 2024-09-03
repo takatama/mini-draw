@@ -1,4 +1,5 @@
 import { getPosition, startDrawing, drawLine } from "./draw";
+import { hexToRgbA, bucketFill } from "./fill";
 
 const FG_CANVAS = "#md-fg-canvas";
 const PENCIL_COLOR_PICKER = "#md-fg-color-picker";
@@ -79,6 +80,12 @@ export function createComponents(container) {
     drawLine: (event) => {
       const { x, y } = getPosition(components.fgCanvas, event);
       drawLine(components.fgCtx, x, y);
+    },
+
+    bucketFill: (event) => {
+      const { x, y } = getPosition(components.fgCanvas, event);
+      const fillColor = hexToRgbA(components.getpencilColor());
+      bucketFill(components.fgCanvas, components.fgCtx, x, y, fillColor);
     },
 
     setEraserIndicatorSize: (eraserSize) => {

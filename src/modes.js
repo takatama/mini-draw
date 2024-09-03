@@ -1,5 +1,4 @@
-import { getPosition, erase } from "./draw.js";
-import { bucketFill, hexToRgbA } from "./fill.js";
+import { erase } from "./draw.js";
 
 const baseMode = {
   handleStart(event) {},
@@ -30,10 +29,8 @@ export function bucketMode(components, state) {
   return {
     ...baseMode,
     handleStart(event) {
-      const { x, y } = getPosition(components.fgCanvas, event);
-      const fillColor = hexToRgbA(components.getpencilColor());
       state.save();
-      bucketFill(components.fgCanvas, components.fgCtx, x, y, fillColor);
+      components.bucketFill(event);
     },
   };
 }
