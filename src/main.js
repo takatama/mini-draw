@@ -4,7 +4,7 @@ import { createComponents } from "./components.js";
 import { createState } from "./state.js";
 import { pencilMode, bucketMode, eraserMode, backgroundMode } from "./modes";
 
-export const DEFAULTS = {
+const DEFAULTS = {
   CANVAS_WIDTH: 340,
   CANVAS_HEIGHT: 340,
   PENCIL_COLOR: "#000000",
