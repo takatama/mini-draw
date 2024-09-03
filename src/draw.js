@@ -5,17 +5,17 @@ export function getPosition(canvas, event) {
   return { x: Math.floor(x), y: Math.floor(y) };
 }
 
-export function setIndicatorPosition(state, event) {
+export function setIndicatorPosition(indicator, eraserSize, event) {
   const x =
     (event.clientX || event.touches[0].clientX) -
-    state.eraserSize / 2 +
+    eraserSize / 2 +
     window.scrollX;
   const y =
     (event.clientY || event.touches[0].clientY) -
-    state.eraserSize / 2 +
+    eraserSize / 2 +
     window.scrollY;
-  state.eraserIndicator.style.left = x + "px";
-  state.eraserIndicator.style.top = y + "px";
+  indicator.style.left = x + "px";
+  indicator.style.top = y + "px";
 }
 
 export function startDrawing(ctx, color, thickness, x, y) {

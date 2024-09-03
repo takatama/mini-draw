@@ -51,7 +51,7 @@ export function eraserMode(state) {
   return {
     handleStart(event) {
       saveState(state);
-      setIndicatorPosition(state, event);
+      setIndicatorPosition(state.eraserIndicator, state.eraserSize, event);
     },
     handleMove(event) {
       const { x, y } = getPosition(state.fgCanvas, event);
@@ -63,7 +63,7 @@ export function eraserMode(state) {
       state.eraserIndicator.style.display = withinCanvasBounds
         ? "block"
         : "none";
-      setIndicatorPosition(state, event);
+      setIndicatorPosition(state.eraserIndicator, state.eraserSize, event);
       if (event.buttons === 1 || event.touches) {
         erase(state.fgCtx, state.eraserSize, x, y);
       }
