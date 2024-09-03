@@ -8,7 +8,7 @@ export function pencilMode(components, state) {
     isDrawing: false,
     handleStart(event) {
       const { x, y } = getPosition(components.fgCanvas, event);
-      components.hideElement(components.eraserIndicator);
+      components.hideEraserIndicatort();
       startDrawing(components.fgCtx, state.fgColor, state.thickness, x, y);
       this.isDrawing = true;
       state.save();

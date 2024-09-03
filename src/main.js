@@ -62,7 +62,7 @@ export function setupInteractions(components, state) {
 
   components.container.querySelectorAll("[name=mode]").forEach((radio) => {
     radio.addEventListener("change", (event) => {
-      components.hideElement(components.eraserIndicator);
+      components.hideEraserIndicatort();
       components.setModeTools(event.target.value);
       switch (event.target.value) {
         case "pencil":
@@ -97,11 +97,7 @@ export function setupInteractions(components, state) {
   components.bgColorPicker.addEventListener("input", (event) => {
     state.save();
     state.bgColor = event.target.value;
-    components.updateBackgroundColor(
-      components.bgCtx,
-      components.bgIcon,
-      state.bgColor
-    );
+    components.updateBackgroundColor(state.bgColor);
   });
 
   components.clearCanvasButton.addEventListener("click", state.clearCanvas);

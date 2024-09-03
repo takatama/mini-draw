@@ -55,22 +55,10 @@ export function createComponents(container) {
 
     applyUndo: (state, lastState) => {
       if (lastState) {
-        components.updateCanvas(
-          components.bgCanvas,
-          components.bgCtx,
-          lastState.background
-        );
-        components.updateCanvas(
-          components.fgCanvas,
-          components.fgCtx,
-          lastState.drawing
-        );
+        components.updateBgCanvas(lastState.background);
+        components.updateFgCanvas(lastState.drawing);
         components.updateColorPicker(components.fgColorPicker, state.fgColor);
-        components.updateBackgroundColor(
-          components.bgCtx,
-          components.bgIcon,
-          state.bgColor
-        );
+        components.updateBackgroundColor(state.bgColor);
       }
     },
 
@@ -83,14 +71,15 @@ export function createComponents(container) {
       components.eraserIndicator.style.height = `${eraserSize}px`;
     },
 
-    updateBackgroundColor: (ctx, bgIcon, color) => {
+    updateBackgroundColor: (color) => {
+      const ctx = components.bgCtx;
       ctx.fillStyle = color;
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      bgIcon.setAttribute("fill", color);
+      components.bgIcon.setAttribute("fill", color);
     },
 
-    hideElement: (element) => {
-      element.style.display = "none";
+    hideEraserIndicatort: () => {
+      components.eraserIndicator.style.display = "none";
     },
 
     setEraserIndicatorPosition: (eraserSize, event) => {
@@ -114,13 +103,12 @@ export function createComponents(container) {
       return components.fgColorPicker.value;
     },
 
-    updateCanvas: (canvas, ctx, imageDataUrl) => {
-      const image = new Image();
-      image.src = imageDataUrl;
-      image.onload = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(image, 0, 0);
-      };
+    updateFgCanvas: (imageDataUrl) => {
+      updateCanvas(components.fgCanvas, components.fgCtx, imageDataUrl);
+    },
+
+    updateBgCanvas: (imageDataUrl) => {
+      updateCanvas(components.bgCanvas, components.bgCtx, imageDataUrl);
     },
 
     updateColorPicker: (picker, color) => {
@@ -129,4 +117,13 @@ export function createComponents(container) {
   };
 
   return components;
+}
+
+function updateCanvas(canvas, ctx, imageDataUrl) {
+  const image = new Image();
+  image.src = imageDataUrl;
+  image.onload = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(image, 0, 0);
+  };
 }
