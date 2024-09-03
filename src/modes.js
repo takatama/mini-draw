@@ -1,6 +1,7 @@
 import { getPosition, startDrawing, drawLine, erase } from "./draw.js";
 
 import { bucketFill, hexToRgbA } from "./fill.js";
+import { FG_COLOR_PICKER } from "./selectors.js";
 import {
   hideElement,
   updateEraserIndicatorPosition,
@@ -35,7 +36,7 @@ export function bucketMode(state) {
     handleStart(event) {
       const { x, y } = getPosition(state.fgCanvas, event);
       const fillColor = hexToRgbA(
-        state.container.querySelector("#md-fg-color-picker").value
+        state.container.querySelector(FG_COLOR_PICKER).value
       );
       state.save();
       bucketFill(state.fgCanvas, state.fgCtx, x, y, fillColor);

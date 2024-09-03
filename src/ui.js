@@ -1,3 +1,5 @@
+import { BG_ICON, FG_COLOR_PICKER, MODE_TOOLS } from "./selectors";
+
 export function updateColorPicker(container, selector, color) {
   const picker = container.querySelector(selector);
   if (picker) picker.value = color;
@@ -15,7 +17,7 @@ export function updateCanvas(canvas, ctx, imageDataUrl) {
 export function updateBackgroundColor(container, ctx, color) {
   ctx.fillStyle = color;
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  container.querySelector("#bg-icon").setAttribute("fill", color);
+  container.querySelector(BG_ICON).setAttribute("fill", color);
 }
 
 export function clearCanvas({ fgCanvas, fgCtx, bgCanvas, bgCtx, bgColor }) {
@@ -26,7 +28,7 @@ export function clearCanvas({ fgCanvas, fgCtx, bgCanvas, bgCtx, bgColor }) {
 }
 
 export function updateModeTools(container, mode) {
-  container.querySelector("#md-mode-tools").className = `mode-${mode}`;
+  container.querySelector(MODE_TOOLS).className = `mode-${mode}`;
 }
 
 export function updateEraserIndicatorSize(eraserIndicator, eraserSize) {
@@ -38,7 +40,7 @@ export function applyUndo(state, lastState) {
   if (lastState) {
     updateCanvas(state.bgCanvas, state.bgCtx, lastState.background);
     updateCanvas(state.fgCanvas, state.fgCtx, lastState.drawing);
-    updateColorPicker(state.container, "#md-fg-color-picker", state.fgColor);
+    updateColorPicker(state.container, FG_COLOR_PICKER, state.fgColor);
     updateBackgroundColor(state.container, state.bgCtx, state.bgColor);
   }
 }

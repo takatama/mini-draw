@@ -1,0 +1,11 @@
+export const FG_CANVAS = "#md-fg-canvas";
+export const FG_COLOR_PICKER = "#md-fg-color-picker";
+export const THICKNESS_SLIDER = "#md-thickness-slider";
+export const ERASER_INDICATOR = "#md-eraser-indicator";
+export const ERASER_SIZE_SLIDER = "#md-eraser-size-slider";
+export const BG_CANVAS = "#md-bg-canvas";
+export const BG_COLOR_PICKER = "#md-bg-color-picker";
+export const BG_ICON = "#bg-icon";
+export const CLEAR_CANVAS_BUTTON = "#md-clear-canvas";
+export const UNDO_BUTTON = "#md-undo";
+export const MODE_TOOLS = "#md-mode-tools";

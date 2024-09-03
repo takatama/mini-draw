@@ -1,5 +1,16 @@
 import template from "./template.html?raw";
 import style from "./style.css?raw";
+import {
+  FG_CANVAS,
+  FG_COLOR_PICKER,
+  THICKNESS_SLIDER,
+  BG_CANVAS,
+  BG_COLOR_PICKER,
+  ERASER_INDICATOR,
+  ERASER_SIZE_SLIDER,
+  CLEAR_CANVAS_BUTTON,
+  UNDO_BUTTON,
+} from "./selectors.js";
 import { pencilMode, bucketMode, eraserMode, backgroundMode } from "./modes.js";
 import { createState } from "./state.js";
 import {
@@ -30,8 +41,8 @@ const MiniDraw = (function () {
   }
 
   function initialize(container) {
-    const fgCanvas = container.querySelector("#md-fg-canvas");
-    const bgCanvas = container.querySelector("#md-bg-canvas");
+    const fgCanvas = container.querySelector(FG_CANVAS);
+    const bgCanvas = container.querySelector(BG_CANVAS);
     const state = createState({
       container,
       fgColor: DEFAULT_PENCIL_COLOR,
@@ -42,7 +53,7 @@ const MiniDraw = (function () {
       fgCtx: fgCanvas.getContext("2d"),
       bgCanvas,
       bgCtx: bgCanvas.getContext("2d"),
-      eraserIndicator: container.querySelector("#md-eraser-indicator"),
+      eraserIndicator: container.querySelector(ERASER_INDICATOR),
     });
     state.setMode(pencilMode);
 
@@ -94,26 +105,26 @@ function setupEventListeners(state) {
   });
 
   state.container
-    .querySelector("#md-fg-color-picker")
+    .querySelector(FG_COLOR_PICKER)
     .addEventListener("input", (event) => {
       state.fgColor = event.target.value;
     });
 
   state.container
-    .querySelector("#md-thickness-slider")
+    .querySelector(THICKNESS_SLIDER)
     .addEventListener("input", (event) => {
       state.thickness = event.target.value;
     });
 
   state.container
-    .querySelector("#md-eraser-size-slider")
+    .querySelector(ERASER_SIZE_SLIDER)
     .addEventListener("input", (event) => {
       state.eraserSize = event.target.value;
       updateEraserIndicatorSize(state.eraserIndicator, state.eraserSize);
     });
 
   state.container
-    .querySelector("#md-bg-color-picker")
+    .querySelector(BG_COLOR_PICKER)
     .addEventListener("input", (event) => {
       state.save();
       state.bgColor = event.target.value;
@@ -121,10 +132,10 @@ function setupEventListeners(state) {
     });
 
   state.container
-    .querySelector("#md-clear-canvas")
+    .querySelector(CLEAR_CANVAS_BUTTON)
     .addEventListener("click", state.clearCanvas);
   state.container
-    .querySelector("#md-undo")
+    .querySelector(UNDO_BUTTON)
     .addEventListener("click", state.undo);
 }
 
