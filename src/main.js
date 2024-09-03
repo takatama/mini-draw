@@ -4,12 +4,12 @@ import { createComponents } from "./components.js";
 import { createState } from "./state.js";
 import { pencilMode, bucketMode, eraserMode, backgroundMode } from "./modes";
 
+const DEFAULT_CANVAS_WIDTH = 340;
+const DEFAULT_CANVAS_HEIGHT = 340;
 const DEFAULT_PENCIL_COLOR = "#000000";
 const DEFAULT_BG_COLOR = "#FFFFEF";
 const DEFAULT_THICKNESS = 1;
 const DEFAULT_ERASER_SIZE = 20;
-const DEFAULT_CANVAS_WIDTH = 340;
-const DEFAULT_CANVAS_HEIGHT = 340;
 
 const MiniDraw = (function () {
   function init(containerId, options = {}) {
@@ -18,19 +18,58 @@ const MiniDraw = (function () {
       console.error(`Container with id ${containerId} not found`);
       return;
     }
+
     const {
       canvasWidth = DEFAULT_CANVAS_WIDTH,
       canvasHeight = DEFAULT_CANVAS_HEIGHT,
+      pencilColor = DEFAULT_PENCIL_COLOR,
+      bgColor = DEFAULT_BG_COLOR,
+      thickness = DEFAULT_THICKNESS,
+      eraserSize = DEFAULT_ERASER_SIZE,
     } = options;
 
-    injectTemplate(container, canvasWidth, canvasHeight);
+    const validatedCanvasWidth = validatePositiveNumber(
+      canvasWidth,
+      "canvasWidth"
+    )
+      ? canvasWidth
+      : DEFAULT_CANVAS_WIDTH;
+    const validatedCanvasHeight = validatePositiveNumber(
+      canvasHeight,
+      "canvasHeight"
+    )
+      ? canvasHeight
+      : DEFAULT_CANVAS_HEIGHT;
+    const validatedThickness = validatePositiveNumber(thickness, "thickness")
+      ? thickness
+      : DEFAULT_THICKNESS;
+    const validatedEraserSize = validatePositiveNumber(eraserSize, "eraserSize")
+      ? eraserSize
+      : DEFAULT_ERASER_SIZE;
+    const validatedPencilColor = validateColor(pencilColor, "pencilColor")
+      ? pencilColor
+      : DEFAULT_PENCIL_COLOR;
+    const validatedBgColor = validateColor(bgColor, "bgColor")
+      ? bgColor
+      : DEFAULT_BG_COLOR;
+
+    injectTemplate({
+      container,
+      canvasWidth: validatedCanvasWidth,
+      canvasHeight: validatedCanvasHeight,
+      pencilColor: validatedPencilColor,
+      bgColor: validatedBgColor,
+      thickness: validatedThickness,
+      eraserSize: validatedEraserSize,
+    });
+
     const components = createComponents(container);
     const state = createState({
       components,
-      fgColor: DEFAULT_PENCIL_COLOR,
-      bgColor: DEFAULT_BG_COLOR,
-      thickness: DEFAULT_THICKNESS,
-      eraserSize: DEFAULT_ERASER_SIZE,
+      pencilColor: validatedPencilColor,
+      bgColor: validatedBgColor,
+      thickness: validatedThickness,
+      eraserSize: validatedEraserSize,
     });
     state.mode = pencilMode(components, state);
 
@@ -38,15 +77,48 @@ const MiniDraw = (function () {
     state.clearCanvas();
   }
 
-  function injectTemplate(container, canvasWidth, canvasHeight) {
+  function validatePositiveNumber(value, name) {
+    if (typeof value !== "number" || value <= 0) {
+      console.warn(`Invalid ${name}: ${value}. Using default value.`);
+      return false;
+    }
+    return true;
+  }
+
+  function validateColor(color, name) {
+    const isValid = /^#[0-9A-F]{6}$/i.test(color);
+    if (!isValid) {
+      console.warn(`Invalid ${name}: ${color}. Using default value.`);
+      return false;
+    }
+    return true;
+  }
+
+  function injectTemplate({
+    container,
+    canvasWidth,
+    canvasHeight,
+    pencilColor,
+    bgColor,
+    thickness,
+    eraserSize,
+  }) {
     const finalTemplate = template
       .replace(/{{canvasWidth}}/g, canvasWidth)
-      .replace(/{{canvasHeight}}/g, canvasHeight);
+      .replace(/{{canvasHeight}}/g, canvasHeight)
+      .replace(/{{pencilColor}}/g, pencilColor)
+      .replace(/{{bgColor}}/g, bgColor)
+      .replace(/{{thickness}}/g, thickness)
+      .replace(/{{eraserSize}}/g, eraserSize);
     container.innerHTML = finalTemplate;
 
     const finalStyle = style
       .replace(/{{canvasWidth}}/g, canvasWidth)
-      .replace(/{{canvasHeight}}/g, canvasHeight);
+      .replace(/{{canvasHeight}}/g, canvasHeight)
+      .replace(/{{pencilColor}}/g, pencilColor)
+      .replace(/{{bgColor}}/g, bgColor)
+      .replace(/{{thickness}}/g, thickness)
+      .replace(/{{eraserSize}}/g, eraserSize);
     const styleElement = document.createElement("style");
     styleElement.textContent = finalStyle;
     document.head.appendChild(styleElement);
@@ -77,8 +149,8 @@ const MiniDraw = (function () {
 
     setupModeSwitching(components, state);
 
-    components.fgColorPicker.addEventListener("input", (event) => {
-      state.fgColor = event.target.value;
+    components.pencilColorPicker.addEventListener("input", (event) => {
+      state.pencilColor = event.target.value;
     });
 
     components.thicknessSlider.addEventListener("input", (event) => {

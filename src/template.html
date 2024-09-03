@@ -110,7 +110,7 @@
           type="color"
           id="md-fg-color-picker"
           class="md-tool md-tool-pencil md-tool-bucket"
-          value="#000000"
+          value="{{pencilColor}}"
         />
         <input
           type="range"
@@ -118,7 +118,7 @@
           class="md-tool md-tool-pencil"
           min="1"
           max="50"
-          value="1"
+          value="{{thickness}}"
         />
         <label class="md-tool md-tool-eraser">Eraser</label>
         <input
@@ -127,14 +127,14 @@
           class="md-tool md-tool-eraser"
           min="1"
           max="50"
-          value="20"
+          value="{{eraserSize}}"
         />
         <label class="md-tool md-tool-background">Background</label>
         <input
           type="color"
           id="md-bg-color-picker"
           class="md-tool md-tool-background"
-          value="#FFFFEF"
+          value="{{bgColor}}"
         />
       </div>
     </div>

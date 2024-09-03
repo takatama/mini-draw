@@ -14,7 +14,7 @@ export function pencilMode(components, state) {
     handleStart(event) {
       const { x, y } = getPosition(components.fgCanvas, event);
       components.hideEraserIndicator();
-      startDrawing(components.fgCtx, state.fgColor, state.thickness, x, y);
+      startDrawing(components.fgCtx, state.pencilColor, state.thickness, x, y);
       this.isDrawing = true;
       state.save();
     },
@@ -34,7 +34,7 @@ export function bucketMode(components, state) {
     ...baseMode,
     handleStart(event) {
       const { x, y } = getPosition(components.fgCanvas, event);
-      const fillColor = hexToRgbA(components.getFgColor());
+      const fillColor = hexToRgbA(components.getpencilColor());
       state.save();
       bucketFill(components.fgCanvas, components.fgCtx, x, y, fillColor);
     },

@@ -58,8 +58,8 @@
   position: absolute;
   pointer-events: none;
   display: none;
-  width: 20px;
-  height: 20px;
+  width: {{eraserSize}}px;
+  height: {{eraserSize}}px;
 }
 
 .md-container label {

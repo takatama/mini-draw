@@ -1,7 +1,7 @@
 import { getPosition } from "./draw";
 
 const FG_CANVAS = "#md-fg-canvas";
-const FG_COLOR_PICKER = "#md-fg-color-picker";
+const PENCIL_COLOR_PICKER = "#md-fg-color-picker";
 const THICKNESS_SLIDER = "#md-thickness-slider";
 const ERASER_INDICATOR = "#md-eraser-indicator";
 const ERASER_SIZE_SLIDER = "#md-eraser-size-slider";
@@ -21,7 +21,7 @@ export function createComponents(container) {
     container,
     fgCanvas,
     fgCtx: fgCanvas.getContext("2d"),
-    fgColorPicker: container.querySelector(FG_COLOR_PICKER),
+    pencilColorPicker: container.querySelector(PENCIL_COLOR_PICKER),
     thicknessSlider: container.querySelector(THICKNESS_SLIDER),
     bgCanvas,
     bgCtx: bgCanvas.getContext("2d"),
@@ -59,7 +59,10 @@ export function createComponents(container) {
       if (lastState) {
         components.updateBgCanvas(lastState.background);
         components.updateFgCanvas(lastState.drawing);
-        components.updateColorPicker(components.fgColorPicker, state.fgColor);
+        components.updateColorPicker(
+          components.pencilColorPicker,
+          state.pencilColor
+        );
         components.updateBackgroundColor(state.bgColor);
       }
     },
@@ -112,8 +115,8 @@ export function createComponents(container) {
       components.eraserIndicator.style.top = `${y}px`;
     },
 
-    getFgColor: () => {
-      return components.fgColorPicker.value;
+    getpencilColor: () => {
+      return components.pencilColorPicker.value;
     },
 
     updateFgCanvas: (imageDataUrl) => {

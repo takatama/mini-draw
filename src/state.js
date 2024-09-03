@@ -1,6 +1,6 @@
 export const createState = ({
   components,
-  fgColor,
+  pencilColor,
   bgColor,
   thickness,
   eraserSize,
@@ -9,7 +9,7 @@ export const createState = ({
 
   const state = {
     components,
-    fgColor,
+    pencilColor,
     bgColor,
     thickness,
     eraserSize,
@@ -21,7 +21,7 @@ export const createState = ({
     const stateSnapshot = {
       background: bgCanvas.toDataURL(),
       drawing: fgCanvas.toDataURL(),
-      fgColor: state.fgColor,
+      pencilColor: state.pencilColor,
       bgColor: state.bgColor,
     };
     state.undoStack.push(stateSnapshot);
@@ -30,7 +30,7 @@ export const createState = ({
   state.undo = () => {
     if (state.undoStack.length > 0) {
       const lastState = state.undoStack.pop();
-      state.fgColor = lastState.fgColor;
+      state.pencilColor = lastState.pencilColor;
       state.bgColor = lastState.bgColor;
       applyUndo(state, lastState);
     }
