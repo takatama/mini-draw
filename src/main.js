@@ -1,7 +1,7 @@
 import template from "./template.html?raw";
 import style from "./style.css?raw";
 import { pencilMode, bucketMode, eraserMode, backgroundMode } from "./modes.js";
-import { saveState } from "./draw.js";
+import { saveState, undo } from "./state.js";
 
 const DEFAULT_PENCIL_COLOR = "#000000";
 const DEFAULT_BG_COLOR = "#FFFFEF";
@@ -165,51 +165,6 @@ function clearCanvas(state) {
     ).value;
     state.bgCtx.fillRect(0, 0, state.bgCanvas.width, state.bgCanvas.height);
     state.undoStack.length = 0;
-  };
-}
-
-function undo(state) {
-  return function (event) {
-    if (state.undoStack.length > 0) {
-      const lastState = state.undoStack.pop();
-
-      const lastBackground = new Image();
-      lastBackground.src = lastState.background;
-      lastBackground.onload = () => {
-        state.bgCtx.clearRect(
-          0,
-          0,
-          state.bgCanvas.width,
-          state.bgCanvas.height
-        );
-        state.bgCtx.drawImage(lastBackground, 0, 0);
-      };
-
-      const lastDrawing = new Image();
-      lastDrawing.src = lastState.drawing;
-      lastDrawing.onload = () => {
-        state.fgCtx.clearRect(
-          0,
-          0,
-          state.fgCanvas.width,
-          state.fgCanvas.height
-        );
-        state.fgCtx.drawImage(lastDrawing, 0, 0);
-      };
-
-      state.fgColor = lastState.fgColor;
-      state.container.querySelector("#md-fg-color-picker").value =
-        lastState.fgColor;
-
-      state.bgColor = lastState.bgColor;
-      state.bgCtx.fillStyle = lastState.bgColor;
-      state.bgCtx.fillRect(0, 0, state.bgCanvas.width, state.bgCanvas.height);
-      state.container.querySelector("#md-bg-color-picker").value =
-        lastState.bgColor;
-      state.container
-        .querySelector("#bg-icon")
-        .setAttribute("fill", lastState.bgColor);
-    }
   };
 }
 

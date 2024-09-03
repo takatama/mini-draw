@@ -1,15 +1,5 @@
-export function saveState(state) {
-  const stateSnapshot = {
-    background: state.bgCanvas.toDataURL(),
-    drawing: state.fgCanvas.toDataURL(),
-    fgColor: state.fgColor,
-    bgColor: state.bgColor,
-  };
-  state.undoStack.push(stateSnapshot);
-}
-
-export function getPosition(state, event) {
-  const rect = state.fgCanvas.getBoundingClientRect();
+export function getPosition(canvas, event) {
+  const rect = canvas.getBoundingClientRect();
   const x = (event.clientX || event.touches[0].clientX) - rect.left;
   const y = (event.clientY || event.touches[0].clientY) - rect.top;
   return { x: Math.floor(x), y: Math.floor(y) };
@@ -28,25 +18,25 @@ export function setIndicatorPosition(state, event) {
   state.eraserIndicator.style.top = y + "px";
 }
 
-export function startDrawing(state, x, y) {
-  state.fgCtx.lineCap = "round";
-  state.fgCtx.lineJoin = "round";
-  state.fgCtx.strokeStyle = state.fgColor;
-  state.fgCtx.lineWidth = state.thickness;
-  state.fgCtx.beginPath();
-  state.fgCtx.moveTo(x, y);
+export function startDrawing(ctx, color, thickness, x, y) {
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.strokeStyle = color;
+  ctx.lineWidth = thickness;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
 }
 
-export function drawLine(state, x, y) {
-  state.fgCtx.lineTo(x, y);
-  state.fgCtx.stroke();
+export function drawLine(ctx, x, y) {
+  ctx.lineTo(x, y);
+  ctx.stroke();
 }
 
-export function erase(state, x, y) {
-  state.fgCtx.save();
-  state.fgCtx.globalCompositeOperation = "destination-out";
-  state.fgCtx.beginPath();
-  state.fgCtx.arc(x, y, state.eraserSize / 2, 0, Math.PI * 2, false);
-  state.fgCtx.fill();
-  state.fgCtx.restore();
+export function erase(ctx, eraserSize, x, y) {
+  ctx.save();
+  ctx.globalCompositeOperation = "destination-out";
+  ctx.beginPath();
+  ctx.arc(x, y, eraserSize / 2, 0, Math.PI * 2, false);
+  ctx.fill();
+  ctx.restore();
 }
