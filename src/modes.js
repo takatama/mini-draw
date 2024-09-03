@@ -7,6 +7,12 @@ import {
 } from "./draw.js";
 
 import { bucketFill, hexToRgbA } from "./fill.js";
+import {
+  hideElement,
+  updateModeTools,
+  updateEraserIndicatorPosition,
+  updateEraserIndicatorVisibility,
+} from "./ui.js";
 
 const CANVAS_SIZE = 340;
 
@@ -15,7 +21,7 @@ export function pencilMode(state) {
     isDrawing: false,
     handleStart(event) {
       const { x, y } = getPosition(state.fgCanvas, event);
-      state.eraserIndicator.style.display = "none";
+      hideElement(state.eraserIndicator);
       startDrawing(state.fgCtx, state.fgColor, state.thickness, x, y);
       this.isDrawing = true;
       state.save();
@@ -50,7 +56,11 @@ export function eraserMode(state) {
   return {
     handleStart(event) {
       state.save();
-      setIndicatorPosition(state.eraserIndicator, state.eraserSize, event);
+      updateEraserIndicatorPosition(
+        state.eraserIndicator,
+        state.eraserSize,
+        event
+      );
     },
     handleMove(event) {
       const { x, y } = getPosition(state.fgCanvas, event);
@@ -59,10 +69,15 @@ export function eraserMode(state) {
         x + state.eraserSize / 2 < CANVAS_SIZE &&
         y - state.eraserSize / 2 > 0 &&
         y + state.eraserSize / 2 < CANVAS_SIZE;
-      state.eraserIndicator.style.display = withinCanvasBounds
-        ? "block"
-        : "none";
-      setIndicatorPosition(state.eraserIndicator, state.eraserSize, event);
+      updateEraserIndicatorVisibility(
+        state.eraserIndicator,
+        withinCanvasBounds
+      );
+      updateEraserIndicatorPosition(
+        state.eraserIndicator,
+        state.eraserSize,
+        event
+      );
       if (event.buttons === 1 || event.touches) {
         erase(state.fgCtx, state.eraserSize, x, y);
       }

@@ -42,3 +42,28 @@ export function applyUndo(state, lastState) {
     updateBackgroundColor(state.container, state.bgCtx, state.bgColor);
   }
 }
+
+export function hideElement(element) {
+  element.style.display = "none";
+}
+
+export function updateEraserIndicatorPosition(
+  eraserIndicator,
+  eraserSize,
+  event
+) {
+  const x =
+    (event.clientX || event.touches[0].clientX) -
+    eraserSize / 2 +
+    window.scrollX;
+  const y =
+    (event.clientY || event.touches[0].clientY) -
+    eraserSize / 2 +
+    window.scrollY;
+  eraserIndicator.style.left = `${x}px`;
+  eraserIndicator.style.top = `${y}px`;
+}
+
+export function updateEraserIndicatorVisibility(eraserIndicator, isVisible) {
+  eraserIndicator.style.display = isVisible ? "block" : "none";
+}
