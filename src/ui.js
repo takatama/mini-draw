@@ -33,3 +33,12 @@ export function updateEraserIndicatorSize(eraserIndicator, eraserSize) {
   eraserIndicator.style.width = `${eraserSize}px`;
   eraserIndicator.style.height = `${eraserSize}px`;
 }
+
+export function applyUndo(state, lastState) {
+  if (lastState) {
+    updateCanvas(state.bgCanvas, state.bgCtx, lastState.background);
+    updateCanvas(state.fgCanvas, state.fgCtx, lastState.drawing);
+    updateColorPicker(state.container, "#md-fg-color-picker", state.fgColor);
+    updateBackgroundColor(state.container, state.bgCtx, state.bgColor);
+  }
+}

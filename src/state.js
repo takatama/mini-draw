@@ -1,9 +1,4 @@
-import {
-  updateColorPicker,
-  updateCanvas,
-  updateBackgroundColor,
-  clearCanvas,
-} from "./ui.js";
+import { clearCanvas, applyUndo } from "./ui.js";
 
 export const createState = ({
   container,
@@ -51,13 +46,11 @@ export const createState = ({
   state.undo = function () {
     if (this.undoStack.length > 0) {
       const lastState = this.undoStack.pop();
-      updateCanvas(this.bgCanvas, this.bgCtx, lastState.background);
-      updateCanvas(this.fgCanvas, this.fgCtx, lastState.drawing);
       this.fgColor = lastState.fgColor;
-      updateColorPicker(this.container, "#md-fg-color-picker", this.fgColor);
       this.bgColor = lastState.bgColor;
-      updateBackgroundColor(this.container, this.bgCtx, this.bgColor);
+      applyUndo(state, lastState);
     }
+    return null;
   }.bind(state);
 
   state.clearCanvas = function () {
