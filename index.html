@@ -9,18 +9,18 @@
   <body>
     <div id="app"></div>
     <script type="module">
-      if (import.meta.env.PROD) {
-        const script = document.createElement("script");
-        script.src = "./dist/mini-draw.umd.js";
-        script.onload = () => {
-          MiniDraw.init("app");
-        };
-        document.body.appendChild(script);
-      } else {
+      if (import.meta.env?.DEV) {
         import("./src/main.js").then((module) => {
           const MiniDraw = module.default;
           MiniDraw.init("app");
         });
+      } else {
+        const script = document.createElement("script");
+        script.src = "/dist/mini-draw.umd.js";
+        script.onload = () => {
+          MiniDraw.init("app");
+        };
+        document.body.appendChild(script);
       }
     </script>
   </body>
