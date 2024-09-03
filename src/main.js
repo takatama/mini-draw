@@ -39,79 +39,81 @@ const MiniDraw = (function () {
     document.head.appendChild(styleElement);
   }
 
+  function setupInteractions(components, state) {
+    function addCanvasEventListener_(canvas, eventTypes, func) {
+      eventTypes.forEach((eventType) =>
+        canvas.addEventListener(eventType, func)
+      );
+    }
+
+    addCanvasEventListener_(
+      components.fgCanvas,
+      ["touchstart", "mousedown"],
+      (event) => state.mode.handleStart(event)
+    );
+    addCanvasEventListener_(
+      components.fgCanvas,
+      ["touchmove", "mousemove"],
+      (event) => state.mode.handleMove(event)
+    );
+    addCanvasEventListener_(
+      components.fgCanvas,
+      ["touchend", "mouseup", "mouseout"],
+      (event) => state.mode.handleEnd(event)
+    );
+
+    setupModeSwitching(components, state);
+
+    components.fgColorPicker.addEventListener("input", (event) => {
+      state.fgColor = event.target.value;
+    });
+
+    components.thicknessSlider.addEventListener("input", (event) => {
+      state.thickness = event.target.value;
+    });
+
+    components.eraserSizeSlider.addEventListener("input", (event) => {
+      state.eraserSize = event.target.value;
+      components.updateEraserIndicatorSize(state.eraserSize);
+    });
+
+    components.bgColorPicker.addEventListener("input", (event) => {
+      state.save();
+      state.bgColor = event.target.value;
+      components.updateBackgroundColor(state.bgColor);
+    });
+
+    components.clearCanvasButton.addEventListener("click", state.clearCanvas);
+    components.undoButton.addEventListener("click", state.undo);
+  }
+
+  function setupModeSwitching(components, state) {
+    components.container.querySelectorAll("[name=mode]").forEach((radio) => {
+      radio.addEventListener("change", (event) => {
+        components.hideEraserIndicator();
+        components.setModeTools(event.target.value);
+        state.mode = switchMode(event.target.value, components, state);
+      });
+    });
+  }
+
+  function switchMode(value, components, state) {
+    switch (value) {
+      case "pencil":
+        return pencilMode(components, state);
+      case "eraser":
+        return eraserMode(components, state);
+      case "bucket":
+        return bucketMode(components, state);
+      case "background":
+        return backgroundMode(components, state);
+      default:
+        console.error(`Unknown mode: ${value}`);
+        return state.mode;
+    }
+  }
+
   return { init };
 })();
-
-export function setupInteractions(components, state) {
-  function addCanvasEventListener_(canvas, eventTypes, func) {
-    eventTypes.forEach((eventType) => canvas.addEventListener(eventType, func));
-  }
-
-  addCanvasEventListener_(
-    components.fgCanvas,
-    ["touchstart", "mousedown"],
-    (event) => state.mode.handleStart(event)
-  );
-  addCanvasEventListener_(
-    components.fgCanvas,
-    ["touchmove", "mousemove"],
-    (event) => state.mode.handleMove(event)
-  );
-  addCanvasEventListener_(
-    components.fgCanvas,
-    ["touchend", "mouseup", "mouseout"],
-    (event) => state.mode.handleEnd(event)
-  );
-
-  setupModeSwitching(components, state);
-
-  components.fgColorPicker.addEventListener("input", (event) => {
-    state.fgColor = event.target.value;
-  });
-
-  components.thicknessSlider.addEventListener("input", (event) => {
-    state.thickness = event.target.value;
-  });
-
-  components.eraserSizeSlider.addEventListener("input", (event) => {
-    state.eraserSize = event.target.value;
-    components.updateEraserIndicatorSize(state.eraserSize);
-  });
-
-  components.bgColorPicker.addEventListener("input", (event) => {
-    state.save();
-    state.bgColor = event.target.value;
-    components.updateBackgroundColor(state.bgColor);
-  });
-
-  components.clearCanvasButton.addEventListener("click", state.clearCanvas);
-  components.undoButton.addEventListener("click", state.undo);
-}
-
-function setupModeSwitching(components, state) {
-  components.container.querySelectorAll("[name=mode]").forEach((radio) => {
-    radio.addEventListener("change", (event) => {
-      components.hideEraserIndicator();
-      components.setModeTools(event.target.value);
-      state.mode = switchMode(event.target.value, components, state);
-    });
-  });
-}
-
-function switchMode(value, components, state) {
-  switch (value) {
-    case "pencil":
-      return pencilMode(components, state);
-    case "eraser":
-      return eraserMode(components, state);
-    case "bucket":
-      return bucketMode(components, state);
-    case "background":
-      return backgroundMode(components, state);
-    default:
-      console.error(`Unknown mode: ${value}`);
-      return state.mode;
-  }
-}
 
 export default MiniDraw;
