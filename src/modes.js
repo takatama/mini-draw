@@ -1,29 +1,22 @@
 import { getPosition, startDrawing, drawLine, erase } from "./draw.js";
-
 import { bucketFill, hexToRgbA } from "./fill.js";
-import {
-  hideElement,
-  updateEraserIndicatorPosition,
-  updateEraserIndicatorVisibility,
-  getColor,
-} from "./ui.js";
 
 const CANVAS_SIZE = 340;
 
-export function pencilMode(state) {
+export function pencilMode(components, state) {
   return {
     isDrawing: false,
     handleStart(event) {
-      const { x, y } = getPosition(state.fgCanvas, event);
-      hideElement(state.eraserIndicator);
+      const { x, y } = getPosition(components.fgCanvas, event);
+      components.hideElement(components.eraserIndicator);
       startDrawing(state.fgCtx, state.fgColor, state.thickness, x, y);
       this.isDrawing = true;
       state.save();
     },
     handleMove(event) {
       if (!this.isDrawing) return;
-      const { x, y } = getPosition(state.fgCanvas, event);
-      drawLine(state.fgCtx, x, y);
+      const { x, y } = getPosition(components.fgCanvas, event);
+      drawLine(components.fgCtx, x, y);
     },
     handleEnd() {
       this.isDrawing = false;
@@ -31,54 +24,43 @@ export function pencilMode(state) {
   };
 }
 
-export function bucketMode(state) {
+export function bucketMode(components, state) {
   return {
     handleStart(event) {
-      const { x, y } = getPosition(state.fgCanvas, event);
-      const fillColor = hexToRgbA(getColor(state.fgColorPicker));
+      const { x, y } = getPosition(components.fgCanvas, event);
+      const fillColor = hexToRgbA(components.getFgColor());
       state.save();
-      bucketFill(state.fgCanvas, state.fgCtx, x, y, fillColor);
+      bucketFill(components.fgCanvas, components.fgCtx, x, y, fillColor);
     },
     handleMove(event) {},
     handleEnd() {},
   };
 }
 
-export function eraserMode(state) {
+export function eraserMode(components, state) {
   return {
     handleStart(event) {
       state.save();
-      updateEraserIndicatorPosition(
-        state.eraserIndicator,
-        state.eraserSize,
-        event
-      );
+      components.updateEraserIndicatorPosition(state.eraserSize, event);
     },
     handleMove(event) {
-      const { x, y } = getPosition(state.fgCanvas, event);
+      const { x, y } = getPosition(components.fgCanvas, event);
       const withinCanvasBounds =
         x - state.eraserSize / 2 > 0 &&
         x + state.eraserSize / 2 < CANVAS_SIZE &&
         y - state.eraserSize / 2 > 0 &&
         y + state.eraserSize / 2 < CANVAS_SIZE;
-      updateEraserIndicatorVisibility(
-        state.eraserIndicator,
-        withinCanvasBounds
-      );
-      updateEraserIndicatorPosition(
-        state.eraserIndicator,
-        state.eraserSize,
-        event
-      );
+      components.updateEraserIndicatorVisibility(withinCanvasBounds);
+      components.updateEraserIndicatorPosition(state.eraserSize, event);
       if (event.buttons === 1 || event.touches) {
-        erase(state.fgCtx, state.eraserSize, x, y);
+        erase(components.fgCtx, state.eraserSize, x, y);
       }
     },
     handleEnd() {},
   };
 }
 
-export function backgroundMode(state) {
+export function backgroundMode(components, state) {
   return {
     handleStart(event) {},
     handleMove(event) {},
