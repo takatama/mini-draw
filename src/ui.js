@@ -69,3 +69,7 @@ export function updateEraserIndicatorPosition(
 export function updateEraserIndicatorVisibility(eraserIndicator, isVisible) {
   eraserIndicator.style.display = isVisible ? "block" : "none";
 }
+
+export function getForegroundColor(container) {
+  return container.querySelector(FG_COLOR_PICKER).value;
+}
