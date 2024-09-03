@@ -1,15 +1,8 @@
-import {
-  getPosition,
-  startDrawing,
-  drawLine,
-  setIndicatorPosition,
-  erase,
-} from "./draw.js";
+import { getPosition, startDrawing, drawLine, erase } from "./draw.js";
 
 import { bucketFill, hexToRgbA } from "./fill.js";
 import {
   hideElement,
-  updateModeTools,
   updateEraserIndicatorPosition,
   updateEraserIndicatorVisibility,
 } from "./ui.js";
