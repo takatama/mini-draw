@@ -1,14 +1,6 @@
 import template from "./template.html?raw";
 import style from "./style.css?raw";
-import {
-  handleStart,
-  handleMove,
-  handleEnd,
-  pencilMode,
-  bucketMode,
-  eraserMode,
-  backgroundMode,
-} from "./modes.js";
+import { pencilMode, bucketMode, eraserMode, backgroundMode } from "./modes.js";
 import { createState } from "./state.js";
 import {
   updateModeTools,
@@ -69,17 +61,15 @@ function setupEventListeners(state) {
   addCanvasEventListener_(
     state.fgCanvas,
     ["touchstart", "mousedown"],
-    handleStart(state)
+    (event) => state.mode.handleStart(event)
   );
-  addCanvasEventListener_(
-    state.fgCanvas,
-    ["touchmove", "mousemove"],
-    handleMove(state)
+  addCanvasEventListener_(state.fgCanvas, ["touchmove", "mousemove"], (event) =>
+    state.mode.handleMove(event)
   );
   addCanvasEventListener_(
     state.fgCanvas,
     ["touchend", "mouseup", "mouseout"],
-    handleEnd(state)
+    (event) => state.mode.handleEnd(event)
   );
 
   state.container.querySelectorAll("[name=mode]").forEach((radio) => {

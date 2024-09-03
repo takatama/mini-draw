@@ -10,24 +10,6 @@ import { bucketFill, hexToRgbA } from "./fill.js";
 
 const CANVAS_SIZE = 340;
 
-export function handleStart(state) {
-  return function (event) {
-    state.mode.handleStart(event);
-  };
-}
-
-export function handleMove(state) {
-  return function (event) {
-    state.mode.handleMove(event);
-  };
-}
-
-export function handleEnd(state) {
-  return function (event) {
-    state.mode.handleEnd(event);
-  };
-}
-
 export function pencilMode(state) {
   return {
     isDrawing: false,
