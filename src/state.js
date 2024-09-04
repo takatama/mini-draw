@@ -39,7 +39,7 @@ export const createState = ({
 
   state.clearCanvas = () => {
     clearCanvas(state.bgColor);
-    state.undoStack.length = 0;
+    state.undoStack = [];
   };
 
   return state;
