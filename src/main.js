@@ -25,37 +25,37 @@ const MiniDraw = (function () {
       canvasWidth: validateValue(
         options.canvasWidth,
         DEFAULTS.CANVAS_WIDTH,
-        validatePositiveNumber,
+        "number",
         "canvasWidth"
       ),
       canvasHeight: validateValue(
         options.canvasHeight,
         DEFAULTS.CANVAS_HEIGHT,
-        validatePositiveNumber,
+        "number",
         "canvasHeight"
       ),
       pencilColor: validateValue(
         options.pencilColor,
         DEFAULTS.PENCIL_COLOR,
-        validateColor,
+        "color",
         "pencilColor"
       ),
       bgColor: validateValue(
         options.bgColor,
         DEFAULTS.BG_COLOR,
-        validateColor,
+        "color",
         "bgColor"
       ),
       thickness: validateValue(
         options.thickness,
         DEFAULTS.THICKNESS,
-        validatePositiveNumber,
+        "number",
         "thickness"
       ),
       eraserSize: validateValue(
         options.eraserSize,
         DEFAULTS.ERASER_SIZE,
-        validatePositiveNumber,
+        "number",
         "eraserSize"
       ),
     };
@@ -76,23 +76,20 @@ const MiniDraw = (function () {
     state.clearCanvas();
   }
 
-  function validateValue(value, defaultValue, validator, name) {
+  function validateValue(value, defaultValue, type, name) {
+    const validators = {
+      number: (v) => typeof v === "number" && v > 0,
+      color: (v) => /^#[0-9A-F]{6}$/i.test(v),
+    };
+
     if (value === undefined) {
       return defaultValue;
     }
-    if (!validator(value)) {
+    if (!validators[type](value)) {
       console.warn(`Invalid ${name}: ${value}. Using default value.`);
       return defaultValue;
     }
     return value;
-  }
-
-  function validatePositiveNumber(value) {
-    return typeof value === "number" && value > 0;
-  }
-
-  function validateColor(color) {
-    return /^#[0-9A-F]{6}$/i.test(color);
   }
 
   function injectTemplate(options) {
