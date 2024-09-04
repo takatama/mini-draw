@@ -1,5 +1,5 @@
 import { getPosition, startDrawing, drawLine, erase } from "./draw";
-import { hexToRgbA, bucketFill } from "./fill";
+import { bucketFill } from "./fill";
 
 const FG_CANVAS = "#md-fg-canvas";
 const PENCIL_COLOR_PICKER = "#md-fg-color-picker";
