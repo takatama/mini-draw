@@ -58,17 +58,18 @@ export function createComponents(container) {
 
     applyUndo: (state, lastState) => {
       if (lastState) {
-        components.updateBgCanvas(lastState.background);
-        components.updateFgCanvas(lastState.drawing);
-        components.updateColorPicker(
-          components.pencilColorPicker,
-          state.pencilColor
+        updateCanvas(
+          components.bgCanvas,
+          components.bgCtx,
+          lastState.background
         );
+        updateCanvas(components.fgCanvas, components.fgCtx, lastState.drawing);
+        components.pencilColorPicker.value = state.pencilColor;
         components.updateBackgroundColor(state.bgColor);
       }
     },
 
-    setModeTools: (mode) => {
+    setToolMode: (mode) => {
       components.modeTools.className = `mode-${mode}`;
     },
 
@@ -90,7 +91,7 @@ export function createComponents(container) {
       bucketFill(
         components.fgCanvas,
         components.fgCtx,
-        components.getPencilColor(),
+        components.pencilColorPicker.value,
         event
       );
     },
@@ -102,13 +103,6 @@ export function createComponents(container) {
     setEraserIndicatorSize: (eraserSize) => {
       components.eraserIndicator.style.width = `${eraserSize}px`;
       components.eraserIndicator.style.height = `${eraserSize}px`;
-    },
-
-    updateBackgroundColor: (color) => {
-      const ctx = components.bgCtx;
-      ctx.fillStyle = color;
-      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      components.bgIcon.setAttribute("fill", color);
     },
 
     hideEraserIndicator: () => {
@@ -130,20 +124,11 @@ export function createComponents(container) {
       return { x, y, withinCanvasBounds };
     },
 
-    getPencilColor: () => {
-      return components.pencilColorPicker.value;
-    },
-
-    updateFgCanvas: (imageDataUrl) => {
-      updateCanvas(components.fgCanvas, components.fgCtx, imageDataUrl);
-    },
-
-    updateBgCanvas: (imageDataUrl) => {
-      updateCanvas(components.bgCanvas, components.bgCtx, imageDataUrl);
-    },
-
-    updateColorPicker: (picker, color) => {
-      if (picker) picker.value = color;
+    updateBackgroundColor: (color) => {
+      const ctx = components.bgCtx;
+      ctx.fillStyle = color;
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      components.bgIcon.setAttribute("fill", color);
     },
   };
 

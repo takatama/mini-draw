@@ -151,7 +151,7 @@ const MiniDraw = (function () {
 
     components.eraserSizeSlider.addEventListener("input", (event) => {
       state.eraserSize = event.target.value;
-      components.updateEraserIndicatorSize(state.eraserSize);
+      components.setEraserIndicatorSize(state.eraserSize);
     });
 
     components.bgColorPicker.addEventListener("input", (event) => {
@@ -168,7 +168,7 @@ const MiniDraw = (function () {
     components.container.querySelectorAll("[name=mode]").forEach((radio) => {
       radio.addEventListener("change", (event) => {
         components.hideEraserIndicator();
-        components.setModeTools(event.target.value);
+        components.setToolMode(event.target.value);
         state.mode = switchMode(event.target.value, components, state);
       });
     });
