@@ -2,7 +2,7 @@ import template from "./template.html?raw";
 import style from "./style.css?raw";
 import { createComponents } from "./components.js";
 import { createState } from "./state.js";
-import { pencilMode, bucketMode, eraserMode, backgroundMode } from "./modes";
+import { pencilMode } from "./modes";
 
 const DEFAULTS = {
   CANVAS_WIDTH: 340,
@@ -13,6 +13,11 @@ const DEFAULTS = {
   ERASER_SIZE: 20,
 };
 
+const validators = {
+  number: (v) => typeof v === "number" && v > 0,
+  color: (v) => /^#[0-9A-F]{6}$/i.test(v),
+};
+
 const MiniDraw = (function () {
   function init(containerId, options = {}) {
     const container = document.getElementById(containerId);
@@ -21,44 +26,24 @@ const MiniDraw = (function () {
       return;
     }
 
-    const validatedOptions = {
-      canvasWidth: validateValue(
-        options.canvasWidth,
-        DEFAULTS.CANVAS_WIDTH,
-        "number",
-        "canvasWidth"
-      ),
-      canvasHeight: validateValue(
-        options.canvasHeight,
-        DEFAULTS.CANVAS_HEIGHT,
-        "number",
-        "canvasHeight"
-      ),
-      pencilColor: validateValue(
-        options.pencilColor,
-        DEFAULTS.PENCIL_COLOR,
-        "color",
-        "pencilColor"
-      ),
-      bgColor: validateValue(
-        options.bgColor,
-        DEFAULTS.BG_COLOR,
-        "color",
-        "bgColor"
-      ),
-      thickness: validateValue(
-        options.thickness,
-        DEFAULTS.THICKNESS,
-        "number",
-        "thickness"
-      ),
-      eraserSize: validateValue(
-        options.eraserSize,
-        DEFAULTS.ERASER_SIZE,
-        "number",
-        "eraserSize"
-      ),
+    const defaults = {
+      canvasWidth: DEFAULTS.CANVAS_WIDTH,
+      canvasHeight: DEFAULTS.CANVAS_HEIGHT,
+      pencilColor: DEFAULTS.PENCIL_COLOR,
+      bgColor: DEFAULTS.BG_COLOR,
+      thickness: DEFAULTS.THICKNESS,
+      eraserSize: DEFAULTS.ERASER_SIZE,
     };
+
+    const validatedOptions = Object.keys(defaults).reduce((acc, key) => {
+      acc[key] = validateValue(
+        options[key],
+        defaults[key],
+        typeof defaults[key],
+        key
+      );
+      return acc;
+    }, {});
 
     injectTemplate({
       container,
@@ -77,11 +62,6 @@ const MiniDraw = (function () {
   }
 
   function validateValue(value, defaultValue, type, name) {
-    const validators = {
-      number: (v) => typeof v === "number" && v > 0,
-      color: (v) => /^#[0-9A-F]{6}$/i.test(v),
-    };
-
     if (value === undefined) {
       return defaultValue;
     }
@@ -98,12 +78,10 @@ const MiniDraw = (function () {
     let finalTemplate = template;
     let finalStyle = style;
 
-    Object.keys(rest).forEach((key) => {
-      finalTemplate = finalTemplate.replace(
-        new RegExp(`{{${key}}}`, "g"),
-        rest[key]
-      );
-      finalStyle = finalStyle.replace(new RegExp(`{{${key}}}`, "g"), rest[key]);
+    Object.entries(rest).forEach(([key, value]) => {
+      const regex = new RegExp(`{{${key}}}`, "g");
+      finalTemplate = finalTemplate.replace(regex, value);
+      finalStyle = finalStyle.replace(regex, value);
     });
 
     container.innerHTML = finalTemplate;
