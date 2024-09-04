@@ -47,27 +47,29 @@ export function setupInteractions(elements, actions, state) {
 }
 
 function setupModeSwitching(elements, actions, state) {
-  elements.container.querySelectorAll("[name=mode]").forEach((radio) => {
+  const modeRadios = elements.container.querySelectorAll("[name=mode]");
+  modeRadios.forEach((radio) =>
     radio.addEventListener("change", (event) => {
       actions.hideEraserIndicator();
       actions.setToolMode(event.target.value);
       state.mode = switchMode(event.target.value, actions, state);
-    });
-  });
+    })
+  );
 }
 
-function switchMode(value, actions, state) {
-  const modes = {
-    pencil: pencilMode,
-    eraser: eraserMode,
-    bucket: bucketMode,
-    background: backgroundMode,
-  };
+const modeMapping = {
+  pencil: pencilMode,
+  eraser: eraserMode,
+  bucket: bucketMode,
+  background: backgroundMode,
+};
 
-  if (!modes[value]) {
+function switchMode(value, actions, state) {
+  const modeFunction = modeMapping[value];
+  if (!modeFunction) {
     console.error(`Unknown mode: ${value}`);
     return state.mode;
   }
 
-  return modes[value](actions, state);
+  return modeFunction(actions, state);
 }
