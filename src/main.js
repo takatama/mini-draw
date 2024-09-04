@@ -3,6 +3,7 @@ import style from "./style.css?raw";
 import { createComponents } from "./components.js";
 import { createState } from "./state.js";
 import { pencilMode } from "./modes";
+import { setupInteractions } from "./interactions.js";
 
 const DEFAULTS = {
   CANVAS_WIDTH: 340,
@@ -56,8 +57,7 @@ const MiniDraw = (function () {
       ...validatedOptions,
     });
     state.mode = pencilMode(components, state);
-
-    components.init(state);
+    setupInteractions(components, state);
     state.clearCanvas();
   }
 
