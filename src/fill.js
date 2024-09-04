@@ -1,4 +1,10 @@
-export function bucketFill(canvas, ctx, x, initialY, fillColor) {
+import { getPosition } from "./draw";
+
+export function bucketFill(canvas, ctx, fillColor, event) {
+  const { x, y } = getPosition(canvas, event);
+  let initialY = y;
+  fillColor = hexToRgbA(fillColor);
+
   console.log(`Starting fill at (${x}, ${initialY}) with color:`, fillColor);
 
   let pixelStack = [[x, initialY]];

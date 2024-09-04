@@ -73,24 +73,30 @@ export function createComponents(container) {
     },
 
     startDrawing: (pencilColor, thickness, event) => {
-      const { x, y } = getPosition(components.fgCanvas, event);
-      startDrawing(components.fgCtx, pencilColor, thickness, x, y);
+      startDrawing(
+        components.fgCanvas,
+        components.fgCtx,
+        pencilColor,
+        thickness,
+        event
+      );
     },
 
     drawLine: (event) => {
-      const { x, y } = getPosition(components.fgCanvas, event);
-      drawLine(components.fgCtx, x, y);
+      drawLine(components.fgCanvas, components.fgCtx, event);
     },
 
     bucketFill: (event) => {
-      const { x, y } = getPosition(components.fgCanvas, event);
-      const fillColor = hexToRgbA(components.getpencilColor());
-      bucketFill(components.fgCanvas, components.fgCtx, x, y, fillColor);
+      bucketFill(
+        components.fgCanvas,
+        components.fgCtx,
+        components.getPencilColor(),
+        event
+      );
     },
 
     erase: (eraserSize, event) => {
-      const { x, y } = getPosition(components.fgCanvas, event);
-      erase(components.fgCtx, eraserSize, x, y);
+      erase(components.fgCanvas, components.fgCtx, eraserSize, event);
     },
 
     setEraserIndicatorSize: (eraserSize) => {
@@ -120,24 +126,11 @@ export function createComponents(container) {
       components.eraserIndicator.style.display = withinCanvasBounds
         ? "block"
         : "none";
-      components.setEraserIndicatorPosition(eraserSize, event);
+      setEraserIndicatorPosition(components.eraserIndicator, eraserSize, event);
       return { x, y, withinCanvasBounds };
     },
 
-    setEraserIndicatorPosition: (eraserSize, event) => {
-      const x =
-        (event.clientX || event.touches[0].clientX) -
-        eraserSize / 2 +
-        window.scrollX;
-      const y =
-        (event.clientY || event.touches[0].clientY) -
-        eraserSize / 2 +
-        window.scrollY;
-      components.eraserIndicator.style.left = `${x}px`;
-      components.eraserIndicator.style.top = `${y}px`;
-    },
-
-    getpencilColor: () => {
+    getPencilColor: () => {
       return components.pencilColorPicker.value;
     },
 
@@ -155,6 +148,19 @@ export function createComponents(container) {
   };
 
   return components;
+}
+
+function setEraserIndicatorPosition(indicator, eraserSize, event) {
+  const x =
+    (event.clientX || event.touches[0].clientX) -
+    eraserSize / 2 +
+    window.scrollX;
+  const y =
+    (event.clientY || event.touches[0].clientY) -
+    eraserSize / 2 +
+    window.scrollY;
+  indicator.style.left = `${x}px`;
+  indicator.style.top = `${y}px`;
 }
 
 function updateCanvas(canvas, ctx, imageDataUrl) {

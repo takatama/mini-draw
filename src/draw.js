@@ -5,7 +5,8 @@ export function getPosition(canvas, event) {
   return { x: Math.floor(x), y: Math.floor(y) };
 }
 
-export function startDrawing(ctx, color, thickness, x, y) {
+export function startDrawing(canvas, ctx, color, thickness, event) {
+  const { x, y } = getPosition(canvas, event);
   if (ctx && typeof ctx.beginPath === "function") {
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
@@ -16,14 +17,16 @@ export function startDrawing(ctx, color, thickness, x, y) {
   }
 }
 
-export function drawLine(ctx, x, y) {
+export function drawLine(canvas, ctx, event) {
+  const { x, y } = getPosition(canvas, event);
   if (ctx && typeof ctx.lineTo === "function") {
     ctx.lineTo(x, y);
     ctx.stroke();
   }
 }
 
-export function erase(ctx, eraserSize, x, y) {
+export function erase(canvas, ctx, eraserSize, event) {
+  const { x, y } = getPosition(canvas, event);
   if (ctx && typeof ctx.arc === "function") {
     ctx.save();
     ctx.globalCompositeOperation = "destination-out";
