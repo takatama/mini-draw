@@ -1,62 +1,62 @@
 import { pencilMode, bucketMode, eraserMode, backgroundMode } from "./modes";
 
-export function setupInteractions(components, state) {
+export function setupInteractions(elements, actions, state) {
   function addCanvasEventListener_(canvas, eventTypes, func) {
     eventTypes.forEach((eventType) => canvas.addEventListener(eventType, func));
   }
 
   addCanvasEventListener_(
-    components.fgCanvas,
+    elements.fgCanvas,
     ["touchstart", "mousedown"],
     (event) => state.mode.handleStart(event)
   );
   addCanvasEventListener_(
-    components.fgCanvas,
+    elements.fgCanvas,
     ["touchmove", "mousemove"],
     (event) => state.mode.handleMove(event)
   );
   addCanvasEventListener_(
-    components.fgCanvas,
+    elements.fgCanvas,
     ["touchend", "mouseup", "mouseout"],
     (event) => state.mode.handleEnd(event)
   );
 
-  setupModeSwitching(components, state);
+  setupModeSwitching(elements, actions, state);
 
-  components.pencilColorPicker.addEventListener("input", (event) => {
+  elements.pencilColorPicker.addEventListener("input", (event) => {
     state.pencilColor = event.target.value;
   });
 
-  components.thicknessSlider.addEventListener("input", (event) => {
+  elements.thicknessSlider.addEventListener("input", (event) => {
     state.thickness = event.target.value;
   });
 
-  components.eraserSizeSlider.addEventListener("input", (event) => {
+  elements.eraserSizeSlider.addEventListener("input", (event) => {
     state.eraserSize = event.target.value;
-    components.setEraserIndicatorSize(state.eraserSize);
+    actions.setEraserIndicatorSize(state.eraserSize);
   });
 
-  components.bgColorPicker.addEventListener("input", (event) => {
+  elements.bgColorPicker.addEventListener("input", (event) => {
     state.save();
     state.bgColor = event.target.value;
-    components.updateBackgroundColor(state.bgColor);
+    actions.updateBackgroundColor(state.bgColor);
   });
 
-  components.clearCanvasButton.addEventListener("click", state.clearCanvas);
-  components.undoButton.addEventListener("click", state.undo);
+  elements.clearCanvasButton.addEventListener("click", state.clearCanvas);
+  elements.undoButton.addEventListener("click", state.undo);
 }
 
-function setupModeSwitching(components, state) {
-  components.container.querySelectorAll("[name=mode]").forEach((radio) => {
+function setupModeSwitching(elements, actions, state) {
+  elements.container.querySelectorAll("[name=mode]").forEach((radio) => {
     radio.addEventListener("change", (event) => {
-      components.hideEraserIndicator();
-      components.setToolMode(event.target.value);
-      state.mode = switchMode(event.target.value, components, state);
+      actions.hideEraserIndicator();
+      actions.setToolMode(event.target.value);
+      state.mode = switchMode(event.target.value, actions, state);
     });
   });
 }
 
-function switchMode(value, components, state) {
+function switchMode(value, actions, state) {
   const modes = {
     pencil: pencilMode,
     eraser: eraserMode,
@@ -69,5 +69,5 @@ function switchMode(value, components, state) {
     return state.mode;
   }
 
-  return modes[value](components, state);
+  return modes[value](actions, state);
 }

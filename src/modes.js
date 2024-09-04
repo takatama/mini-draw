@@ -4,18 +4,18 @@ const baseMode = {
   handleEnd() {},
 };
 
-export function pencilMode(components, state) {
+export function pencilMode(actions, state) {
   return {
     ...baseMode,
     isDrawing: false,
     handleStart(event) {
-      components.startDrawing(state.pencilColor, state.thickness, event);
+      actions.startDrawing(state.pencilColor, state.thickness, event);
       this.isDrawing = true;
       state.save();
     },
     handleMove(event) {
       if (!this.isDrawing) return;
-      components.drawLine(event);
+      actions.drawLine(event);
     },
     handleEnd() {
       this.isDrawing = false;
@@ -23,30 +23,30 @@ export function pencilMode(components, state) {
   };
 }
 
-export function bucketMode(components, state) {
+export function bucketMode(actions, state) {
   return {
     ...baseMode,
     handleStart(event) {
       state.save();
-      components.bucketFill(event);
+      actions.bucketFill(event);
     },
   };
 }
 
-export function eraserMode(components, state) {
+export function eraserMode(actions, state) {
   return {
     ...baseMode,
     handleStart(event) {
       state.save();
-      components.updateEraserIndicator(state.eraserSize, event);
+      actions.updateEraserIndicator(state.eraserSize, event);
     },
     handleMove(event) {
-      const { withinCanvasBounds } = components.updateEraserIndicator(
+      const { withinCanvasBounds } = actions.updateEraserIndicator(
         state.eraserSize,
         event
       );
       if (withinCanvasBounds && (event.buttons === 1 || event.touches)) {
-        components.erase(state.eraserSize, event);
+        actions.erase(state.eraserSize, event);
       }
     },
   };

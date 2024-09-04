@@ -1,6 +1,6 @@
 import template from "./template.html?raw";
 import style from "./style.css?raw";
-import { createComponents } from "./components.js";
+import { createElements, createActions } from "./components.js";
 import { createState } from "./state.js";
 import { pencilMode } from "./modes";
 import { setupInteractions } from "./interactions.js";
@@ -51,13 +51,15 @@ const MiniDraw = (function () {
       ...validatedOptions,
     });
 
-    const components = createComponents(container);
+    const elements = createElements(container);
+    const actions = createActions(elements);
     const state = createState({
-      components,
+      elements,
+      actions,
       ...validatedOptions,
     });
-    state.mode = pencilMode(components, state);
-    setupInteractions(components, state);
+    state.mode = pencilMode(actions, state);
+    setupInteractions(elements, actions, state);
     state.clearCanvas();
   }
 

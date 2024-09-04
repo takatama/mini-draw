@@ -1,14 +1,15 @@
 export const createState = ({
-  components,
+  elements,
+  actions,
   pencilColor,
   bgColor,
   thickness,
   eraserSize,
 }) => {
-  const { bgCanvas, fgCanvas, applyUndo, clearCanvas } = components;
+  const { bgCanvas, fgCanvas } = elements;
+  const { applyUndo, clearCanvas } = actions;
 
   const state = {
-    components,
     pencilColor,
     bgColor,
     thickness,

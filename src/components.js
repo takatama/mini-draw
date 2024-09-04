@@ -13,12 +13,12 @@ const CLEAR_CANVAS_BUTTON = "#md-clear-canvas";
 const UNDO_BUTTON = "#md-undo";
 const MODE_TOOLS = "#md-mode-tools";
 
-export function createComponents(container) {
+export function createElements(container) {
   const fgCanvas = container.querySelector(FG_CANVAS);
   fgCanvas.style.willReadFrequently = true;
   const bgCanvas = container.querySelector(BG_CANVAS);
 
-  const components = {
+  return {
     container,
     fgCanvas,
     fgCtx: fgCanvas.getContext("2d"),
@@ -33,106 +33,79 @@ export function createComponents(container) {
     clearCanvasButton: container.querySelector(CLEAR_CANVAS_BUTTON),
     undoButton: container.querySelector(UNDO_BUTTON),
     modeTools: container.querySelector(MODE_TOOLS),
+  };
+}
 
+export function createActions(elements) {
+  const { fgCanvas, fgCtx, bgCanvas, bgCtx, eraserIndicator } = elements;
+
+  const actions = {
     clearCanvas: (bgColor) => {
-      components.fgCtx.clearRect(
-        0,
-        0,
-        components.fgCanvas.width,
-        components.fgCanvas.height
-      );
-      components.bgCtx.clearRect(
-        0,
-        0,
-        components.bgCanvas.width,
-        components.bgCanvas.height
-      );
-      components.bgCtx.fillStyle = bgColor;
-      components.bgCtx.fillRect(
-        0,
-        0,
-        components.bgCanvas.width,
-        components.bgCanvas.height
-      );
+      fgCtx.clearRect(0, 0, fgCanvas.width, fgCanvas.height);
+      bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+      bgCtx.fillStyle = bgColor;
+      bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
     },
 
     applyUndo: (state, lastState) => {
       if (lastState) {
-        updateCanvas(
-          components.bgCanvas,
-          components.bgCtx,
-          lastState.background
-        );
-        updateCanvas(components.fgCanvas, components.fgCtx, lastState.drawing);
-        components.pencilColorPicker.value = state.pencilColor;
-        components.updateBackgroundColor(state.bgColor);
+        updateCanvas(bgCanvas, bgCtx, lastState.background);
+        updateCanvas(fgCanvas, fgCtx, lastState.drawing);
+        elements.pencilColorPicker.value = state.pencilColor;
+        actions.updateBackgroundColor(state.bgColor);
       }
     },
 
     setToolMode: (mode) => {
-      components.modeTools.className = `mode-${mode}`;
+      elements.modeTools.className = `mode-${mode}`;
     },
 
     startDrawing: (pencilColor, thickness, event) => {
-      startDrawing(
-        components.fgCanvas,
-        components.fgCtx,
-        pencilColor,
-        thickness,
-        event
-      );
+      startDrawing(fgCanvas, fgCtx, pencilColor, thickness, event);
     },
 
     drawLine: (event) => {
-      drawLine(components.fgCanvas, components.fgCtx, event);
+      drawLine(fgCanvas, fgCtx, event);
     },
 
     bucketFill: (event) => {
-      bucketFill(
-        components.fgCanvas,
-        components.fgCtx,
-        components.pencilColorPicker.value,
-        event
-      );
+      bucketFill(fgCanvas, fgCtx, elements.pencilColorPicker.value, event);
     },
 
     erase: (eraserSize, event) => {
-      erase(components.fgCanvas, components.fgCtx, eraserSize, event);
+      erase(fgCanvas, fgCtx, eraserSize, event);
     },
 
     setEraserIndicatorSize: (eraserSize) => {
-      components.eraserIndicator.style.width = `${eraserSize}px`;
-      components.eraserIndicator.style.height = `${eraserSize}px`;
+      eraserIndicator.style.width = `${eraserSize}px`;
+      eraserIndicator.style.height = `${eraserSize}px`;
     },
 
     hideEraserIndicator: () => {
-      components.eraserIndicator.style.display = "none";
+      eraserIndicator.style.display = "none";
     },
 
     updateEraserIndicator: (eraserSize, event) => {
-      const canvas = components.fgCanvas;
-      const { x, y } = getPosition(components.fgCanvas, event);
+      const { x, y } = getPosition(fgCanvas, event);
       const withinCanvasBounds =
         x - eraserSize / 2 > 0 &&
-        x + eraserSize / 2 < canvas.width &&
+        x + eraserSize / 2 < fgCanvas.width &&
         y - eraserSize / 2 > 0 &&
-        y + eraserSize / 2 < canvas.height;
-      components.eraserIndicator.style.display = withinCanvasBounds
-        ? "block"
-        : "none";
-      setEraserIndicatorPosition(components.eraserIndicator, eraserSize, event);
+        y + eraserSize / 2 < fgCanvas.height;
+      eraserIndicator.style.display = withinCanvasBounds ? "block" : "none";
+      setEraserIndicatorPosition(eraserIndicator, eraserSize, event);
       return { x, y, withinCanvasBounds };
     },
 
     updateBackgroundColor: (color) => {
-      const ctx = components.bgCtx;
+      const ctx = bgCtx;
       ctx.fillStyle = color;
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      components.bgIcon.setAttribute("fill", color);
+      elements.bgIcon.setAttribute("fill", color);
     },
   };
 
-  return components;
+  return actions;
 }
 
 function setEraserIndicatorPosition(indicator, eraserSize, event) {
