@@ -41,7 +41,32 @@ mini-draw is a lightweight and minimalistic drawing tool built with vanilla Java
    </script>
    ```
 
-Here is a complete example:
+   You can also customize the widget by passing an options `object` to `MiniDraw.init()`. The available options are:
+
+   - `canvasWidth` (number): The width of the canvas in pixels. Default is `340`.
+   - `canvasHeight` (number): The height of the canvas in pixels. Default is `340`.
+   - `pencilColor` (string): The color of the pencil tool in hex format. Default is `#000000`.
+   - `bgColor` (string): The background color of the canvas in hex format. Default is `#FFFFEF`.
+   - `thickness` (number): The thickness of the pencil tool in pixels. Default is `1`.
+   - `eraserSize` (number): The size of the eraser tool in pixels. Default is `20`.
+
+   Example with options:
+
+   ```html
+   <script src="path/to/mini-draw.umd.js"></script>
+   <script>
+     MiniDraw.init("app", {
+       canvasWidth: 500,
+       canvasHeight: 400,
+       pencilColor: "#FF0000",
+       bgColor: "#FFFFFF",
+       thickness: 2,
+       eraserSize: 30,
+     });
+   </script>
+   ```
+
+Here is a complete example with custom options:
 
 ```html
 <!DOCTYPE html>
@@ -56,7 +81,14 @@ Here is a complete example:
     <div id="app"></div>
     <script src="path/to/mini-draw.umd.js"></script>
     <script>
-      MiniDraw.init("app");
+      MiniDraw.init("app", {
+        canvasWidth: 500,
+        canvasHeight: 400,
+        pencilColor: "#FF0000",
+        bgColor: "#FFFFFF",
+        thickness: 2,
+        eraserSize: 30,
+      });
     </script>
   </body>
 </html>

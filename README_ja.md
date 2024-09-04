@@ -41,7 +41,32 @@ mini-draw は軽量でシンプルなお絵描きツールです。基本的な�
    </script>
    ```
 
-次に、完全な例です:
+   `MiniDraw.init()` にオプションを渡すことで、ウィジェットをカスタマイズできます。利用可能なオプションは以下の通りです：
+
+   - `canvasWidth` (number): 描画領域の幅をピクセル単位で指定します。デフォルトは `340` です。
+   - `canvasHeight` (number): 描画領域の高さをピクセル単位で指定します。デフォルトは `340` です。
+   - `pencilColor` (string): 鉛筆の色を 16 進数形式で指定します。デフォルトは `#000000` です。
+   - `bgColor` (string): 描画領域の背景色を 16 進数形式で指定します。デフォルトは `#FFFFEF` です。
+   - `thickness` (number): 鉛筆の太さをピクセル単位で指定します。デフォルトは `1` です。
+   - `eraserSize` (number): 消しゴムのサイズをピクセル単位で指定します。デフォルトは `20` です。
+
+   オプションを使う例は次の通りです:
+
+   ```html
+   <script src="path/to/mini-draw.umd.js"></script>
+   <script>
+     MiniDraw.init("app", {
+       canvasWidth: 500,
+       canvasHeight: 400,
+       pencilColor: "#FF0000",
+       bgColor: "#FFFFFF",
+       thickness: 2,
+       eraserSize: 30,
+     });
+   </script>
+   ```
+
+オブションを使った場合の HTML ファイル全体は次のようになります:
 
 ```html
 <!DOCTYPE html>
@@ -56,7 +81,14 @@ mini-draw は軽量でシンプルなお絵描きツールです。基本的な�
     <div id="app"></div>
     <script src="path/to/mini-draw.umd.js"></script>
     <script>
-      MiniDraw.init("app");
+      MiniDraw.init("app", {
+        canvasWidth: 500,
+        canvasHeight: 400,
+        pencilColor: "#FF0000",
+        bgColor: "#FFFFFF",
+        thickness: 2,
+        eraserSize: 30,
+      });
     </script>
   </body>
 </html>
