@@ -1,24 +1,59 @@
-import { pencilMode, bucketMode, eraserMode, backgroundMode } from "./modes";
-
 export function setupInteractions(elements, actions, state) {
   function addCanvasEventListener_(canvas, eventTypes, func) {
     eventTypes.forEach((eventType) => canvas.addEventListener(eventType, func));
   }
 
+  const handleCanvasEvent = (event, type) => {
+    const mode = state.mode;
+    switch (type) {
+      case "start":
+        if (mode === "pencil") {
+          state.isDrawing = true;
+          actions.startDrawing(state.pencilColor, state.thickness, event);
+          state.save();
+        } else if (mode === "bucket") {
+          state.save();
+          actions.bucketFill(event);
+        } else if (mode === "eraser") {
+          state.save();
+          actions.updateEraserIndicator(state.eraserSize, event);
+        }
+        break;
+      case "move":
+        if (mode === "pencil" && state.isDrawing) {
+          actions.drawLine(event);
+        } else if (mode === "eraser") {
+          const { withinCanvasBounds } = actions.updateEraserIndicator(
+            state.eraserSize,
+            event
+          );
+          if (withinCanvasBounds && (event.buttons === 1 || event.touches)) {
+            actions.erase(state.eraserSize, event);
+          }
+        }
+        break;
+      case "end":
+        if (mode === "pencil") {
+          state.isDrawing = false;
+        }
+        break;
+    }
+  };
+
   addCanvasEventListener_(
     elements.fgCanvas,
     ["touchstart", "mousedown"],
-    (event) => state.mode.handleStart(event)
+    (event) => handleCanvasEvent(event, "start")
   );
   addCanvasEventListener_(
     elements.fgCanvas,
     ["touchmove", "mousemove"],
-    (event) => state.mode.handleMove(event)
+    (event) => handleCanvasEvent(event, "move")
   );
   addCanvasEventListener_(
     elements.fgCanvas,
     ["touchend", "mouseup", "mouseout"],
-    (event) => state.mode.handleEnd(event)
+    (event) => handleCanvasEvent(event, "end")
   );
 
   setupModeSwitching(elements, actions, state);
@@ -52,24 +87,7 @@ function setupModeSwitching(elements, actions, state) {
     radio.addEventListener("change", (event) => {
       actions.hideEraserIndicator();
       actions.setToolMode(event.target.value);
-      state.mode = switchMode(event.target.value, actions, state);
+      state.mode = event.target.value;
     })
   );
-}
-
-const modeMapping = {
-  pencil: pencilMode,
-  eraser: eraserMode,
-  bucket: bucketMode,
-  background: backgroundMode,
-};
-
-function switchMode(value, actions, state) {
-  const modeFunction = modeMapping[value];
-  if (!modeFunction) {
-    console.error(`Unknown mode: ${value}`);
-    return state.mode;
-  }
-
-  return modeFunction(actions, state);
 }
