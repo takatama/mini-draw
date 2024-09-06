@@ -9,8 +9,8 @@ export function setupInteractions(elements, actions, state) {
       case "start":
         if (mode === "pencil") {
           state.isDrawing = true;
+          state.hasMoved = false;
           actions.startDrawing(state.pencilColor, state.thickness, event);
-          state.save();
         } else if (mode === "bucket") {
           state.save();
           actions.bucketFill(event);
@@ -21,6 +21,10 @@ export function setupInteractions(elements, actions, state) {
         break;
       case "move":
         if (mode === "pencil" && state.isDrawing) {
+          if (!state.hasMoved) {
+            state.save();
+            state.hasMoved = true;
+          }
           actions.drawLine(event);
         } else if (mode === "eraser") {
           const { withinCanvasBounds } = actions.updateEraserIndicator(
@@ -35,6 +39,7 @@ export function setupInteractions(elements, actions, state) {
       case "end":
         if (mode === "pencil") {
           state.isDrawing = false;
+          state.hasMoved = false;
         }
         break;
     }
