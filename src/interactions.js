@@ -27,7 +27,8 @@ export function setupInteractions(elements, actions, state) {
           }
           actions.drawLine(event);
         } else if (mode === "eraser") {
-          const { withinCanvasBounds } = actions.updateEraserIndicator(
+          actions.updateEraserIndicator(state.eraserSize, event);
+          const withinCanvasBounds = actions.withinCanvasBounds(
             state.eraserSize,
             event
           );

@@ -86,15 +86,19 @@ export function createActions(elements) {
     },
 
     updateEraserIndicator: (eraserSize, event) => {
+      const withinCanvasBounds = actions.withinCanvasBounds(eraserSize, event);
+      eraserIndicator.style.display = withinCanvasBounds ? "block" : "none";
+      setEraserIndicatorPosition(eraserIndicator, eraserSize, event);
+    },
+
+    withinCanvasBounds: (eraserSize, event) => {
       const { x, y } = getPosition(fgCanvas, event);
-      const withinCanvasBounds =
+      return (
         x - eraserSize / 2 > 0 &&
         x + eraserSize / 2 < fgCanvas.width &&
         y - eraserSize / 2 > 0 &&
-        y + eraserSize / 2 < fgCanvas.height;
-      eraserIndicator.style.display = withinCanvasBounds ? "block" : "none";
-      setEraserIndicatorPosition(eraserIndicator, eraserSize, event);
-      return { x, y, withinCanvasBounds };
+        y + eraserSize / 2 < fgCanvas.height
+      );
     },
 
     updateBackgroundColor: (color) => {
