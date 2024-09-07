@@ -1,6 +1,6 @@
-# mini-draw
+# nano-paint
 
-mini-draw is a lightweight and minimalistic drawing tool built with vanilla JavaScript. It focuses on providing essential features for quick and easy digital sketching and brainstorming.
+nano-paint is a lightweight and minimalistic drawing tool built with vanilla JavaScript. It focuses on providing essential features for quick and easy digital sketching and brainstorming.
 
 ## Features
 
@@ -18,30 +18,30 @@ mini-draw is a lightweight and minimalistic drawing tool built with vanilla Java
 
 ## Demo
 
-<a href="https://mini-draw.pages.dev/" target="_blank">View the mini-draw demo</a>
+<a href="https://nano-paint.pages.dev/" target="_blank">View the nano-paint demo</a>
 
 ## Installation and Usage
 
 ### Basic Usage
 
-1. Include the `mini-draw.umd.js` script in your HTML file.
+1. Include the `nano-paint.umd.js` script in your HTML file.
 
-2. Create a container element in your HTML where you want the Mini Draw widget to be inserted. For example:
+2. Create a container element in your HTML where you want the Nano Paint widget to be inserted. For example:
 
    ```html
    <div id="app"></div>
    ```
 
-3. Initialize the Mini Draw widget by calling `MiniDraw.init()` and passing the ID of the container element:
+3. Initialize the Nano Paint widget by calling `NanoPaint.init()` and passing the ID of the container element:
 
    ```html
-   <script src="path/to/mini-draw.umd.js"></script>
+   <script src="path/to/nano-paint.umd.js"></script>
    <script>
-     MiniDraw.init("app");
+     NanoPaint.init("app");
    </script>
    ```
 
-   You can also customize the widget by passing an options `object` to `MiniDraw.init()`. The available options are:
+   You can also customize the widget by passing an options `object` to `NanoPaint.init()`. The available options are:
 
    - `canvasWidth` (number): The width of the canvas in pixels. Default is `340`.
    - `canvasHeight` (number): The height of the canvas in pixels. Default is `340`.
@@ -53,9 +53,9 @@ mini-draw is a lightweight and minimalistic drawing tool built with vanilla Java
    Example with options:
 
    ```html
-   <script src="path/to/mini-draw.umd.js"></script>
+   <script src="path/to/nano-paint.umd.js"></script>
    <script>
-     MiniDraw.init("app", {
+     NanoPaint.init("app", {
        canvasWidth: 500,
        canvasHeight: 400,
        pencilColor: "#FF0000",
@@ -74,14 +74,14 @@ Here is a complete example with custom options:
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mini Draw</title>
+    <title>Nano Paint</title>
   </head>
 
   <body>
     <div id="app"></div>
-    <script src="path/to/mini-draw.umd.js"></script>
+    <script src="path/to/nano-paint.umd.js"></script>
     <script>
-      MiniDraw.init("app", {
+      NanoPaint.init("app", {
         canvasWidth: 500,
         canvasHeight: 400,
         pencilColor: "#FF0000",
@@ -101,13 +101,13 @@ If you want to modify the code or contribute to the project, follow these steps 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/takatama/mini-draw.git
+   git clone https://github.com/takatama/nano-paint.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd mini-draw
+   cd nano-paint
    ```
 
 3. Install the dependencies:
@@ -146,7 +146,7 @@ To test the production build locally, you can use the provided test setup:
    cd test
    ```
 
-3. Open index.html in your browser to verify that the built mini-draw.umd.js is working correctly.
+3. Open index.html in your browser to verify that the built nano-paint.umd.js is working correctly.
 
 ## Technologies Used
 
@@ -156,7 +156,7 @@ To test the production build locally, you can use the provided test setup:
 
 ## Contributing
 
-Bug reports and feature requests are welcome via [Issues](https://github.com/takatama/mini-draw/issues). Pull requests are also highly appreciated!
+Bug reports and feature requests are welcome via [Issues](https://github.com/takatama/nano-paint/issues). Pull requests are also highly appreciated!
 
 ## License
 

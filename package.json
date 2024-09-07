@@ -1,8 +1,19 @@
 {
-  "name": "mini-draw",
+  "name": "nano-paint",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/nano-paint.umd.js",
+  "module": "./dist/nano-paint.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/nano-paint.es.js",
+      "require": "./dist/nano-paint.umd.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

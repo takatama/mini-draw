@@ -1,6 +1,6 @@
-# mini-draw
+# nano-paint
 
-mini-draw は軽量でシンプルなお絵描きツールです。基本的な機能に焦点を当て、デジタルスケッチやアイデア出しが簡単にできるよう設計されています。
+nano-paint は軽量でシンプルなお絵描きツールです。基本的な機能に焦点を当て、デジタルスケッチやアイデア出しが簡単にできるよう設計されています。
 
 ## 特徴
 
@@ -18,30 +18,30 @@ mini-draw は軽量でシンプルなお絵描きツールです。基本的な�
 
 ## デモ
 
-<a href="https://mini-draw.pages.dev/" target="_blank">mini-draw のデモを見る</a>
+<a href="https://nano-paint.pages.dev/" target="_blank">nano-paint のデモを見る</a>
 
 ## インストールと使い方
 
 ### 基本的な使い方
 
-1. `mini-draw.umd.js`スクリプトを HTML ファイルに追加します。
+1. `nano-paint.umd.js`スクリプトを HTML ファイルに追加します。
 
-2. Mini Draw ウィジェットを挿入したい場所にコンテナ要素を作成します。例:
+2. Nano Paint ウィジェットを挿入したい場所にコンテナ要素を作成します。例:
 
    ```html
    <div id="app"></div>
    ```
 
-3. `MiniDraw.init()`を呼び出して、コンテナ要素の ID を渡します:
+3. `NanoPaint.init()`を呼び出して、コンテナ要素の ID を渡します:
 
    ```html
-   <script src="path/to/mini-draw.umd.js"></script>
+   <script src="path/to/nano-paint.umd.js"></script>
    <script>
-     MiniDraw.init("app");
+     NanoPaint.init("app");
    </script>
    ```
 
-   `MiniDraw.init()` にオプションを渡すことで、ウィジェットをカスタマイズできます。利用可能なオプションは以下の通りです：
+   `NanoPaint.init()` にオプションを渡すことで、ウィジェットをカスタマイズできます。利用可能なオプションは以下の通りです：
 
    - `canvasWidth` (number): 描画領域の幅をピクセル単位で指定します。デフォルトは `340` です。
    - `canvasHeight` (number): 描画領域の高さをピクセル単位で指定します。デフォルトは `340` です。
@@ -53,9 +53,9 @@ mini-draw は軽量でシンプルなお絵描きツールです。基本的な�
    オプションを使う例は次の通りです:
 
    ```html
-   <script src="path/to/mini-draw.umd.js"></script>
+   <script src="path/to/nano-paint.umd.js"></script>
    <script>
-     MiniDraw.init("app", {
+     NanoPaint.init("app", {
        canvasWidth: 500,
        canvasHeight: 400,
        pencilColor: "#FF0000",
@@ -74,14 +74,14 @@ mini-draw は軽量でシンプルなお絵描きツールです。基本的な�
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mini Draw</title>
+    <title>Nano Paint</title>
   </head>
 
   <body>
     <div id="app"></div>
-    <script src="path/to/mini-draw.umd.js"></script>
+    <script src="path/to/nano-paint.umd.js"></script>
     <script>
-      MiniDraw.init("app", {
+      NanoPaint.init("app", {
         canvasWidth: 500,
         canvasHeight: 400,
         pencilColor: "#FF0000",
@@ -101,13 +101,13 @@ mini-draw は軽量でシンプルなお絵描きツールです。基本的な�
 1. リポジトリをクローンします:
 
    ```bash
-   git clone https://github.com/takatama/mini-draw.git
+   git clone https://github.com/takatama/nano-paint.git
    ```
 
 2. プロジェクトディレクトリに移動します:
 
    ```bash
-   cd mini-draw
+   cd nano-paint
    ```
 
 3. 依存関係をインストールします:
@@ -146,7 +146,7 @@ npm run build
    cd test
    ```
 
-3. ブラウザで`index.html`を開き、ビルド済みの`mini-draw.umd.js`が正しく動作することを確認します。
+3. ブラウザで`index.html`を開き、ビルド済みの`nano-paint.umd.js`が正しく動作することを確認します。
 
 ## 使用技術
 
@@ -155,7 +155,7 @@ npm run build
 
 ## 貢献
 
-バグ報告や機能追加の提案は、[Issues](https://github.com/takatama/mini-draw/issues) で受け付けています。プルリクエストも大歓迎です！
+バグ報告や機能追加の提案は、[Issues](https://github.com/takatama/nano-paint/issues) で受け付けています。プルリクエストも大歓迎です！
 
 ## ライセンス
 

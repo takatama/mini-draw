@@ -18,7 +18,7 @@ const validators = {
   color: (v) => /^#[0-9A-F]{6}$/i.test(v),
 };
 
-const MiniDraw = (function () {
+const NanoPaint = (function () {
   function init(containerId, options = {}) {
     const container = document.getElementById(containerId);
     if (!container) {
@@ -95,4 +95,4 @@ const MiniDraw = (function () {
   return { init };
 })();
 
-export default MiniDraw;
+export default NanoPaint;
